@@ -14,6 +14,7 @@ for result in results:
     boxes = result.boxes
     num_person = 0
     for box in boxes:
+        print(box)
         cls_id = int(box.cls[0])
         if model.names[cls_id] == 'person':
             num_person += 1

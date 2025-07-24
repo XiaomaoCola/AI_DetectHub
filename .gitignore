@@ -1,0 +1,61 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+
+# 以下都是gpt给的文件类型
+*.pt
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+ENV/
+.venv/
+.Python
+*.sqlite3
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Log files
+*.log
+
+# Test output
+*.out
+*.tmp
+
+# 图片和调试输出（可选，建议你根据自己需求删减）
+debug/
+*.png
+
+# 你自己的模板、截图临时目录（比如 template/，screenshot/，如果有的话）
+templates/
+screenshot/
+
+# PaddleOCR缓存
+__pycache__/
+inference/
