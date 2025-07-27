@@ -14,11 +14,11 @@ for result in results:
     boxes = result.boxes
     num_person = 0
     for box in boxes:
-        print(box)
+        # print(box)
         cls_id = int(box.cls[0])
         if model.names[cls_id] == 'person':
             num_person += 1
-    print(f"本图片检测到 {num_person} 个 'person'（人）")
+    print(f"检测到 {num_person} 个 'person'（人）")
 
 
     # 获取当前帧带框画面
