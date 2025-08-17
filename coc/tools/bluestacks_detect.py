@@ -44,8 +44,18 @@ class BlueStacksDetector:
                 title = win32gui.GetWindowText(hwnd)
                 if title and re.search(keyword, title, flags=re.I):
                     hwnd_list.append((hwnd, title))
-
         win32gui.EnumWindows(enum_handler, None)
+        #  win32gui.EnumWindows的作用：把当前系统中所有的“顶层窗口（top-level windows）”全部枚举（列出来）一遍，然后对每一个窗口调用提供的处理函数（callback function）。
+        # 如下代码输出的是匹配成功，这是re的一个例子。
+        # import re
+        #
+        # keyword = "bluestacks"
+        # title = "BlueStacks App Player"
+        #
+        # if re.search(keyword, title, flags=re.I):
+        #     print("匹配成功！")
+        # else:
+        #     print("没有匹配到")
 
         # 优先选活动窗口里的第一个匹配
         if hwnd_list:
