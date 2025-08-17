@@ -1,0 +1,7 @@
+path: D:/python-project/AI_DetectHub/coc/dataset
+
+train: images/train
+val: images/val
+
+names:
+  0: attack
