@@ -75,6 +75,7 @@ class BlueStacksDetector:
         print("[INFO] Loading model...")
         self.model = YOLO(self.model_path)
         self.sct = mss()
+        # mss是用于屏幕截图的库。
 
         ok = self.find_window_rect(self.window_keyword)
         if not ok:
@@ -92,18 +93,32 @@ class BlueStacksDetector:
             # 1) 截客户区
             region = {"left": L, "top": T, "width": W, "height": H}
             frame = np.array(self.sct.grab(region))[:, :, :3]  # BGRA -> BGR
+            # self.sct.grab(region)返回的是一张截图，但它是 mss 特有的格式，
+            # 需要用np.array(...)转成 NumPy 格式（OpenCV、YOLO 都能读的标准格式）。
+            # [:, :, :3]，这是 NumPy 的切片操作，第一个 : 表示“所有行”， 第二个: 表示“所有列”，
+            # :3 表示“前三个通道”（通道顺序是 BGRA），把截图从 BGRA（蓝绿红透明） 转成了 BGR（蓝绿红），剔除了透明通道。
 
             # 2) 推理
             results = self.model.predict(frame, imgsz=640, conf=self.conf_thres, verbose=False)[0]
+            # .predict(frame, ...)  ：这是 ultralytics YOLO 的预测函数。
+            # [0] ：YOLO 的 .predict() 返回的是一个列表，因为它支持批量图像输入。这里只有一张图，所以我们只取第一个结果：[0]。
 
             det = []
             if results.boxes is not None and len(results.boxes) > 0:
                 xyxy = results.boxes.xyxy.cpu().numpy().astype(int)
+                # results.boxes 是 YOLO 检测出的所有框（bounding boxes）。
+                # .xyxy 是每个框的坐标，用 [x1, y1, x2, y2] 表示左上角到右下角。
+                # .cpu() 是把数据从 GPU 拉回 CPU（有些 YOLO 模型会在 GPU 上处理）。
+                # .numpy() 是转成 NumPy 数组（方便处理）。
+                # .astype(int) 是把小数坐标变成整数，方便画图和点击
                 cls = results.boxes.cls.cpu().numpy().astype(int)
+                # .cls 是每个检测框对应的类别编号（比如 attack = 0）。
                 conf = results.boxes.conf.cpu().numpy()
+                # .conf 表示模型对每个框的“置信度”是多少，值在 0~1 之间。
                 for (x1, y1, x2, y2), c, p in zip(xyxy, cls, conf):
                     if c == self.cls_id:
                         det.append((float(p), x1, y1, x2, y2))
+                        # 这里的x1, y1, x2, y2， 对应的坐标是以frame左上角顶点为原点的坐标。
 
             # 3) 可视化 & 点击
             overlay = frame.copy()
