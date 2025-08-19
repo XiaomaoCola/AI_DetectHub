@@ -165,5 +165,5 @@ class BlueStacksDetector:
 
 
 if __name__ == "__main__":
-    detector = BlueStacksDetector()
+    detector = BlueStacksDetector(do_click=True)
     detector.run_detection()
