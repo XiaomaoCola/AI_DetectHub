@@ -47,9 +47,13 @@ class Renamer:
 if __name__ == "__main__":
     renamer = Renamer(
         img_dir=r"D:\python-project\AI_DetectHub\coc\dataset\images\train",
+        # 要改的图片集的文件路径。
         prefix="attack_train",
+        # 文件名前缀，比如第一个图片，zfill为3，文件名就会变成attack_train_001。
         start=1,
+        # 编号从1开始。
         zfill=3
+        # zfill表示扩展到3位数，比如数字1，用完zfill会变成001。
     )
     renamer.rename(dry_run=False)
     # 用dry_run=True 先测试，也就是说只打印，不执行。
