@@ -1,0 +1,50 @@
+# COC夜世界自动化全局配置文件
+# 版本: v1.0
+
+# 基本信息
+version: "1.0.0"
+game_version: "2024.1"
+
+# 模型配置
+model:
+  path: "D:/python-project/AI_DetectHub/runs/detect/train/weights/best.pt"
+  confidence_threshold: 0.6
+  nms_threshold: 0.45
+  input_size: 640
+
+# 窗口配置
+window:
+  keyword: "BlueStacks"         # 窗口标题关键词
+  update_interval: 1.0          # 窗口位置更新间隔（秒）
+
+# 全局时间配置
+timing:
+  click_duration: 0.1           # 鼠标移动时间
+  screenshot_interval: 0.1      # 截图间隔
+  state_check_interval: 0.5     # 状态检查间隔
+
+# 显示配置
+display:
+  show_debug: true              # 显示调试信息
+  show_detections: true         # 显示检测框
+  show_fps: true                # 显示FPS
+  window_title: "COC Auto Controller"
+
+# 统计配置
+stats:
+  log_battles: true             # 记录战斗统计
+  log_errors: true              # 记录错误信息
+  session_timeout: 3600         # 会话超时时间（秒）
+
+# 安全配置
+safety:
+  max_errors: 10                # 最大错误次数
+  error_recovery: true          # 错误自动恢复
+  emergency_stop_key: "F12"     # 紧急停止键
+
+# 日志配置
+logging:
+  level: "INFO"                 # DEBUG, INFO, WARNING, ERROR
+  file_path: "logs/coc_auto.log"
+  max_file_size: "10MB"
+  backup_count: 3

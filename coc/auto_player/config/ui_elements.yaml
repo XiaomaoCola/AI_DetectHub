@@ -1,0 +1,149 @@
+# 通用UI元素配置文件
+# 定义各种UI元素的通用属性和验证规则
+
+# 按钮元素通用配置
+buttons:
+  attack:
+    class_name: "attack"
+    typical_size: [100, 40]      # 典型尺寸
+    min_size: [60, 25]
+    max_size: [150, 70]
+    min_confidence: 0.6
+    colors:                      # 典型颜色（用于额外验证）
+      primary: [0, 255, 0]       # 绿色
+      secondary: [255, 255, 255] # 白色文字
+      
+  find_now:
+    class_name: "find_now" 
+    typical_size: [120, 50]
+    min_size: [80, 30]
+    max_size: [200, 80]
+    min_confidence: 0.7
+    colors:
+      primary: [255, 165, 0]     # 橙色
+      
+  surrender_button:
+    class_name: "surrender_button"
+    typical_size: [80, 30]
+    min_size: [50, 20]
+    max_size: [120, 50]  
+    min_confidence: 0.7
+    expected_position: [0.9, 0.1]  # 右上角
+    
+  cancel_button:
+    class_name: "cancel_button"
+    typical_size: [60, 30]
+    min_size: [40, 20]
+    max_size: [100, 50]
+    min_confidence: 0.6
+    
+  okay_button:
+    class_name: "okay_button"
+    typical_size: [80, 35]
+    min_size: [50, 25]
+    max_size: [120, 60]
+    min_confidence: 0.7
+
+# 文本元素配置
+text_elements:
+  searching_text:
+    class_name: "searching_text"
+    typical_content: ["Searching", "Looking for opponent"]
+    min_confidence: 0.5
+    expected_region: [0.3, 0.4, 0.7, 0.6]
+    
+  battle_timer:
+    class_name: "battle_timer"
+    pattern: "\\d{1,2}:\\d{2}"   # 时间格式正则
+    expected_region: [0.4, 0.05, 0.6, 0.15]
+    min_confidence: 0.6
+
+# 区域元素配置  
+areas:
+  empty_space:
+    class_name: "empty_space"
+    min_size: [30, 30]
+    max_size: [200, 200]
+    min_confidence: 0.4
+    valid_regions:               # 有效检测区域
+      - [0.1, 0.3, 0.9, 0.9]     # 主要游戏区域
+      
+  deploy_area:
+    class_name: "deploy_area"  
+    min_size: [50, 50]
+    valid_regions:
+      - [0.0, 0.4, 1.0, 1.0]     # 下半部分屏幕
+      
+  enemy_base:
+    class_name: "enemy_base"
+    min_size: [100, 100]
+    expected_region: [0.2, 0.2, 0.8, 0.8]
+    min_confidence: 0.6
+
+# 界面元素配置
+ui_panels:
+  troop_panel:
+    class_name: "troop_panel"
+    expected_position: [0.1, 0.8]  # 左下角
+    typical_size: [200, 100]
+    min_confidence: 0.5
+    
+  resource_bar:
+    class_name: "resource_bar"
+    expected_position: [0.5, 0.05]  # 顶部中央
+    typical_size: [300, 50]
+    
+# 动画元素配置
+animations:
+  loading_spinner:
+    class_name: "loading_spinner"
+    min_confidence: 0.4
+    duration_range: [1, 10]      # 动画持续时间范围
+    
+# 颜色配置（HSV范围）
+colors:
+  green_button:                  # 绿色按钮
+    h_range: [50, 80]
+    s_range: [100, 255] 
+    v_range: [100, 255]
+    
+  orange_button:                 # 橙色按钮
+    h_range: [10, 25]
+    s_range: [150, 255]
+    v_range: [150, 255]
+    
+  red_button:                    # 红色按钮（投降等）
+    h_range: [0, 10]
+    s_range: [150, 255]
+    v_range: [100, 255]
+
+# 尺寸验证规则
+size_validation:
+  min_aspect_ratio: 0.3          # 最小宽高比
+  max_aspect_ratio: 5.0          # 最大宽高比
+  min_area: 400                  # 最小面积（像素²）
+  max_area: 40000                # 最大面积
+  
+# 位置验证规则
+position_validation:
+  screen_margin: 0.05            # 屏幕边缘边距（比例）
+  overlap_threshold: 0.3         # 重叠阈值
+  
+# 置信度调整规则
+confidence_rules:
+  # 基于位置的置信度加权
+  position_boost:
+    expected_position: 0.1       # 在预期位置的置信度提升
+    valid_region: 0.05           # 在有效区域的提升
+    
+  # 基于尺寸的置信度调整  
+  size_penalty:
+    oversized: -0.2              # 过大的惩罚
+    undersized: -0.1             # 过小的惩罚
+    
+# 多帧验证配置
+temporal_validation:
+  enabled: true                  # 是否启用时间验证
+  required_frames: 3             # 需要连续检测的帧数
+  max_gap: 2                     # 最大间隔帧数
+  confidence_threshold: 0.7      # 时间验证的置信度阈值

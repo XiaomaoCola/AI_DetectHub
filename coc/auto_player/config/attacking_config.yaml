@@ -1,0 +1,119 @@
+# 攻击状态配置文件
+# 战斗界面的UI配置和部署策略
+
+# 状态基本信息
+state_name: "attacking"
+description: "攻击状态，部署部队并在适当时机投降"
+
+# 状态识别标识
+indicators:
+  required: []                  # 没有强制要求的元素
+  optional:
+    - "surrender_button"        # 投降按钮
+    - "battle_timer"            # 战斗计时器
+    - "troop_panel"             # 部队面板
+    - "enemy_base"              # 敌方基地
+    - "deploy_area"             # 部署区域
+  forbidden: 
+    - "find_now"                # 不能有村庄元素
+    - "cancel_button"           # 不能有匹配界面元素
+
+# 部队部署配置
+deployment:
+  max_troops: 12                # 最大部署兵力
+  deploy_interval: 0.8          # 部署间隔（秒）
+  deploy_strategy: "random"     # 部署策略: random, sequential, smart
+  
+  # 部署区域（基于屏幕比例）
+  zones:
+    - name: "left_bottom"
+      position: [0.3, 0.7]
+      weight: 2                 # 权重，越高越可能选择
+    - name: "center_bottom" 
+      position: [0.5, 0.8]
+      weight: 3
+    - name: "right_bottom"
+      position: [0.7, 0.7] 
+      weight: 2
+    - name: "left_mid"
+      position: [0.2, 0.5]
+      weight: 1
+    - name: "right_mid"
+      position: [0.8, 0.5]
+      weight: 1
+
+# 投降条件配置
+surrender_conditions:
+  # 任一条件满足就投降
+  troops_deployed: 10           # 部署兵力达到数量
+  time_elapsed: 30              # 攻击时间超过秒数
+  no_deploy_time: 15            # 多少秒没有部署
+  auto_surrender: true          # 是否自动投降
+
+# 相对位置配置
+relative_positions:
+  # 投降按钮相对位置（如果基于其他元素计算）
+  surrender_from_timer: [100, 50]
+
+# 固定位置配置
+fixed_positions:
+  surrender_button: [0.9, 0.1]  # 右上角投降按钮
+  default_deploy: [0.5, 0.7]    # 默认部署位置
+  safe_deploy_area: [0.4, 0.6, 0.6, 0.8]  # 安全部署区域 [x1,y1,x2,y2]
+
+# 操作配置
+actions:
+  primary_action: "deploy_troops"
+  end_action: "surrender"
+  
+  # 部署操作参数
+  deploy_params:
+    click_duration: 0.05        # 部署点击持续时间
+    spread_radius: 30           # 随机散布半径（像素）
+    avoid_edges: true           # 避免边缘部署
+    
+  # 投降操作参数  
+  surrender_params:
+    double_click: false         # 是否双击
+    confirmation_wait: 1.0      # 确认等待时间
+
+# 时间配置
+timing:
+  max_duration: 120             # 攻击最大持续时间
+  deploy_timeout: 45            # 部署超时时间
+  surrender_timeout: 10         # 投降操作超时
+  
+# 智能部署策略
+smart_deployment:
+  enabled: false                # 是否启用智能部署
+  target_priority:              # 目标优先级
+    - "defensive_buildings"     # 防御建筑
+    - "resource_buildings"      # 资源建筑
+    - "empty_spaces"            # 空地
+  avoid_traps: true             # 避开陷阱
+  formation: "spread"           # 阵型: spread, line, cluster
+
+# UI元素验证
+element_validation:
+  surrender_button:
+    min_confidence: 0.7
+    expected_region: [0.8, 0.05, 1.0, 0.2]  # 预期区域
+    
+  empty_space:
+    min_confidence: 0.5
+    min_size: [20, 20]
+    valid_regions:              # 有效部署区域
+      - [0.1, 0.4, 0.9, 0.9]    # 主要部署区域
+      
+# 错误恢复
+error_recovery:
+  stuck_detection: true         # 卡住检测
+  auto_surrender_on_stuck: true # 卡住时自动投降
+  fallback_deploy_zone: [0.5, 0.7]  # 备用部署区域
+
+# 调试配置
+debug:
+  log_deployment: true          # 记录部署操作
+  show_deploy_zones: true       # 显示部署区域
+  deployment_heatmap: false     # 显示部署热力图
+  log_surrender_conditions: true  # 记录投降条件

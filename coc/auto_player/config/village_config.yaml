@@ -1,0 +1,61 @@
+# 村庄状态配置文件
+# Builder Base村庄界面的UI配置
+
+# 状态基本信息
+state_name: "village"
+description: "Builder Base村庄状态，寻找并点击Attack按钮"
+
+# 状态识别标识
+indicators:
+  required: ["find_now"]        # 必须检测到的元素
+  optional: ["attack"]          # 可选检测的元素
+  forbidden: []                 # 不能出现的元素
+
+# 相对位置配置（相对于基准元素的偏移像素）
+relative_positions:
+  # attack按钮相对于find_now按钮的位置
+  attack_from_find_now: [0, -60]
+  
+# 固定位置配置（基于屏幕比例 0.0-1.0）  
+fixed_positions:
+  # 备用attack按钮位置
+  attack_backup: [0.5, 0.35]
+  # 通用点击区域
+  safe_area: [0.5, 0.5]
+
+# 操作配置
+actions:
+  primary_action: "click_attack"   # 主要操作
+  fallback_actions:               # 备用操作序列
+    - "click_attack_by_find_now"  # 通过find_now计算位置
+    - "click_attack_fixed"        # 固定位置点击
+    
+# 时间配置
+timing:
+  max_duration: 30              # 状态最大持续时间（秒）
+  click_delay: 0.1              # 点击后延迟
+  state_transition_delay: 2.0   # 状态切换等待时间
+  retry_interval: 1.0           # 重试间隔
+
+# 重试配置
+retry:
+  max_retries: 3                # 最大重试次数
+  retry_on_failure: true        # 失败时是否重试
+
+# UI元素验证
+element_validation:
+  find_now:
+    min_confidence: 0.6         # 最小置信度
+    min_size: [60, 25]          # 最小尺寸 [width, height]
+    max_size: [200, 80]         # 最大尺寸
+    
+  attack:
+    min_confidence: 0.5
+    min_size: [50, 20]
+    max_size: [150, 70]
+
+# 调试配置
+debug:
+  log_detections: true          # 记录检测结果
+  log_clicks: true              # 记录点击操作
+  highlight_indicators: true    # 高亮标识元素
