@@ -4,4 +4,20 @@ train: images/train
 val: images/val
 
 names:
-  0: attack
+  0: attack  # "Attack!" 按钮， 这个分类既可以识别Home Village的Attack按钮，也可以识别Builder Base的Attack按钮。
+  1: find_now # Builder Base， "Find Now!" 按钮。
+
+
+
+
+
+
+
+
+
+
+# 关于命名规则，为什么Find Now!这个按钮不叫 Find_Now_! 而是叫 find_now：
+# 有 ! 的话 （会在某些工具里出错，比如路径解析、文件名冲突）， 然后大小写建议统一。
+
+# 所以最后命名规则总结为：
+# 全部小写，感叹号省略，空格用下划线。
