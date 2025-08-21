@@ -23,12 +23,49 @@ fixed_positions:
   # 通用点击区域
   safe_area: [0.5, 0.5]
 
+# 任务配置 (按优先级排序)
+tasks:
+  start_attack:
+    name: "开始攻击"
+    description: "点击attack按钮开始攻击循环"
+    priority: 10
+    conditions:
+      required_elements: ["attack"]
+    enabled: true
+    
+  collect_resources:
+    name: "收集资源" 
+    description: "收集村庄中的资源"
+    priority: 5
+    conditions:
+      any_of: ["collect_gold", "collect_elixir", "collect_dark_elixir"]
+    enabled: true
+    max_collections: 3            # 单次最多收集数量
+    collection_interval: 0.5      # 收集间隔
+    
+  attack_by_find_now:
+    name: "通过find_now攻击"
+    description: "通过find_now按钮计算attack按钮位置"
+    priority: 3
+    conditions:
+      required_elements: ["find_now"]
+      forbidden_elements: ["attack"]  # 没有直接attack按钮时才用
+    enabled: true
+    
+  wait:
+    name: "等待"
+    description: "等待新的机会出现" 
+    priority: 1
+    conditions: {}                # 无条件，总是可执行
+    enabled: true
+    wait_duration: 1.0
+
 # 操作配置
 actions:
-  primary_action: "click_attack"   # 主要操作
+  primary_action: "start_attack"   # 主要操作
   fallback_actions:               # 备用操作序列
-    - "click_attack_by_find_now"  # 通过find_now计算位置
-    - "click_attack_fixed"        # 固定位置点击
+    - "attack_by_find_now"        # 通过find_now计算位置
+    - "wait"                      # 等待
     
 # 时间配置
 timing:

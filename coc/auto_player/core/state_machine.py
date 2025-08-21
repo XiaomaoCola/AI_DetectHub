@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Callable
 from dataclasses import dataclass
 
 
@@ -40,6 +40,16 @@ class WindowInfo:
     height: int
 
 
+@dataclass
+class StateTask:
+    """状态任务数据类"""
+    name: str
+    description: str
+    condition: Callable[[List[Detection]], bool]  # 执行条件检查函数
+    action: Callable[[List[Detection], WindowInfo], Optional[GameState]]  # 执行函数
+    priority: int = 0  # 优先级，数字越高优先级越高
+
+
 class StateHandler(ABC):
     """状态处理器抽象基类"""
     
@@ -48,6 +58,7 @@ class StateHandler(ABC):
         self.max_duration = 60  # 状态最大持续时间
         self.retry_count = 0
         self.max_retries = 3
+        self.tasks: List[StateTask] = []  # 状态任务列表
         
     @abstractmethod
     def can_handle(self, detections: List[Detection]) -> bool:
@@ -62,10 +73,15 @@ class StateHandler(ABC):
         """
         pass
     
-    @abstractmethod
+    def add_task(self, task: StateTask):
+        """添加状态任务"""
+        self.tasks.append(task)
+        # 按优先级排序
+        self.tasks.sort(key=lambda x: x.priority, reverse=True)
+    
     def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """
-        执行当前状态的操作
+        执行当前状态的操作 - 检查所有任务并执行第一个满足条件的
         
         Args:
             detections: 检测结果列表
@@ -74,7 +90,19 @@ class StateHandler(ABC):
         Returns:
             Optional[GameState]: 下一个状态，None表示保持当前状态
         """
-        pass
+        print(f"[{self.state_type.value.upper()}] 检查 {len(self.tasks)} 个可用任务...")
+        
+        # 按优先级顺序检查每个任务
+        for task in self.tasks:
+            if task.condition(detections):
+                print(f"[{self.state_type.value.upper()}] 执行任务: {task.name} - {task.description}")
+                next_state = task.action(detections, window_info)
+                if next_state:
+                    print(f"[{self.state_type.value.upper()}] 任务完成，转换到状态: {next_state.value}")
+                return next_state
+        
+        print(f"[{self.state_type.value.upper()}] 没有满足条件的任务，保持当前状态")
+        return None
     
     def get_detections_by_class(self, detections: List[Detection], class_name: str) -> List[Detection]:
         """根据类别名获取检测结果"""
