@@ -8,11 +8,12 @@ from mss import mss
 from ultralytics import YOLO
 import win32gui
 
-from .base_state import GameState, Detection, WindowInfo, StateHandlerRegistry
-from .states.village_handler import VillageHandler
-from .states.finding_handler import FindingOpponentHandler  
-from .states.attacking_handler import AttackingHandler
-from .ui_mapper import MultiConfigManager, UIElementMapper, StateValidator
+from .state_machine import GameState, Detection, WindowInfo, StateHandlerRegistry
+from .states.village import VillageHandler
+from .states.finding import FindingOpponentHandler  
+from .states.attacking import AttackingHandler
+from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
+from .game_modes import GameModeManager, HomeVillageHandler, BuilderBaseHandler
 
 
 class COCGameController:
@@ -44,6 +45,13 @@ class COCGameController:
         # 注册状态处理器
         self.state_registry = StateHandlerRegistry()
         self._register_handlers()
+        
+        # 游戏模式管理器
+        self.mode_manager = GameModeManager()
+        self.mode_handlers = {
+            'home_village': HomeVillageHandler(),
+            'builder_base': BuilderBaseHandler()
+        }
         
         # 统计信息
         self.battle_count = 0

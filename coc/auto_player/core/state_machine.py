@@ -7,7 +7,7 @@ from dataclasses import dataclass
 class GameState(Enum):
     """游戏状态枚举"""
     VILLAGE = "village"
-    FINDING_OPPONENT = "finding"
+    FINDING_OPPONENT = "finding_opponent"
     ATTACKING = "attacking" 
     SURRENDERING = "surrendering"
     CONFIRMING = "confirming"

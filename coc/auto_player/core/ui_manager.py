@@ -2,7 +2,7 @@ import yaml
 from typing import Dict, List, Tuple, Optional, Any
 from pathlib import Path
 
-from .base_state import Detection, WindowInfo
+from .state_machine import Detection, WindowInfo
 
 
 class MultiConfigManager:
@@ -10,7 +10,7 @@ class MultiConfigManager:
     
     def __init__(self, config_dir: str = None):
         if config_dir is None:
-            config_dir = Path(__file__).parent / "config"
+            config_dir = Path(__file__).parent.parent / "config"
         
         self.config_dir = Path(config_dir)
         self.main_config = self._load_main_config()

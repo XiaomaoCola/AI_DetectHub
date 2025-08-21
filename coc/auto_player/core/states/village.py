@@ -2,7 +2,7 @@ import time
 import pyautogui
 from typing import List, Optional
 
-from ..base_state import StateHandler, GameState, Detection, WindowInfo
+from ..state_machine import StateHandler, GameState, Detection, WindowInfo
 
 
 class VillageHandler(StateHandler):

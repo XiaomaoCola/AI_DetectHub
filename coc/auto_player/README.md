@@ -6,22 +6,30 @@
 
 ```
 auto_player/
-├── __init__.py              # 模块入口
-├── main.py                  # 主程序入口
-├── README.md                # 文档
-├── game_controller.py       # 主控制器
-├── base_state.py           # 状态基类和数据结构
-├── ui_mapper.py            # UI映射和配置管理
-├── states/                 # 状态处理器
-│   ├── village_handler.py   # 村庄状态
-│   ├── finding_handler.py   # 寻找对手状态  
-│   └── attacking_handler.py # 攻击状态
-└── config/                 # 配置文件目录
-    ├── main_config.yaml     # 全局配置
-    ├── village_config.yaml  # 村庄状态配置
-    ├── finding_config.yaml  # 寻找对手配置
-    ├── attacking_config.yaml # 攻击状态配置
-    └── ui_elements.yaml     # UI元素通用配置
+├── main.py                  # 🚀 程序入口
+├── README.md                # 📖 项目文档
+├── __init__.py              # 模块导入
+├── core/                    # 🔧 核心业务逻辑
+│   ├── __init__.py
+│   ├── controller.py        # 主控制器
+│   ├── state_machine.py     # 状态机和基类
+│   ├── ui_manager.py        # UI管理器
+│   └── states/             # 状态处理器
+│       ├── __init__.py
+│       ├── village.py       # 村庄状态
+│       ├── finding.py       # 寻找对手状态
+│       └── attacking.py     # 攻击状态
+├── config/                 # ⚙️ 配置文件
+│   ├── main_config.yaml     # 全局配置
+│   ├── village_config.yaml  # 村庄状态配置
+│   ├── finding_config.yaml  # 寻找对手配置
+│   ├── attacking_config.yaml # 攻击状态配置
+│   └── ui_elements.yaml     # UI元素通用配置
+├── utils/                  # 🛠️ 工具函数
+│   ├── __init__.py
+│   └── helpers.py          # 通用工具函数
+└── tests/                  # 🧪 测试文件
+    └── __init__.py
 ```
 
 ## 🚀 快速开始
@@ -76,14 +84,15 @@ python main.py --dry-run
 ## 🔧 扩展开发
 
 ### 添加新状态
-1. 在`states/`目录创建新的处理器类
+1. 在`core/states/`目录创建新的处理器类
 2. 继承`StateHandler`基类
 3. 实现`can_handle()`和`execute()`方法
-4. 在`game_controller.py`中注册
+4. 在`core/controller.py`中注册
 
 ### 示例：
 ```python
-from ..base_state import StateHandler, GameState
+# core/states/custom.py
+from ..state_machine import StateHandler, GameState
 
 class CustomHandler(StateHandler):
     def __init__(self):
@@ -96,6 +105,14 @@ class CustomHandler(StateHandler):
     def execute(self, detections, window_info):
         # 实现状态操作逻辑
         return None
+```
+
+### 添加工具函数
+在`utils/helpers.py`中添加通用工具函数：
+```python
+def your_utility_function():
+    """你的工具函数"""
+    pass
 ```
 
 ### 修改UI配置
