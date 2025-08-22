@@ -1,25 +1,33 @@
 import time
 import pyautogui
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
-from ..state_machine import StateHandler, GameState, Detection, WindowInfo, StateTask
+from ..state_machine import StateHandler, GameState, Detection, WindowInfo
+from ..features import feature_registry
+from ..village_features import register_village_features
 
 
 class VillageHandler(StateHandler):
-    """村庄状态处理器"""
+    """村庄状态处理器 - 使用策略模式"""
     
-    def __init__(self):
+    def __init__(self, config: Dict[str, Any] = None):
         super().__init__(GameState.VILLAGE)
         
+        # 功能配置（用户可通过GUI设置）
+        self.config = config or {
+            'collect_resources': True,
+            'attack': True, 
+            'clan_capital': False,
+            'train_troops': False,
+            'check_army_ready': True
+        }
+        
+        # 注册村庄功能策略
+        register_village_features()
+        
         # 村庄状态的特征标识
-        self.required_indicators = ["find_now"]  # Builder Base特有的find_now按钮
+        self.required_indicators = ["find_now"]  # Builder Base特有的find_now按钮  
         self.optional_indicators = ["attack"]    # 可能存在的attack按钮
-        
-        # 相对位置配置
-        self.attack_offset_from_find_now = (0, -50)  # attack按钮相对于find_now的位置
-        
-        # 初始化任务
-        self._setup_tasks()
         
     def can_handle(self, detections: List[Detection]) -> bool:
         """
@@ -28,121 +36,52 @@ class VillageHandler(StateHandler):
         """
         find_now_detections = self.get_detections_by_class(detections, "find_now")
         return len(find_now_detections) > 0
-    
-    def _setup_tasks(self):
-        """设置村庄状态的任务"""
         
-        # 任务1: 开始攻击 (优先级最高)
-        start_attack_task = StateTask(
-            name="start_attack",
-            description="点击attack按钮开始攻击循环",
-            condition=lambda detections: len(self.get_detections_by_class(detections, "attack")) > 0,
-            action=self._start_attack_action,
-            priority=10
-        )
-        self.add_task(start_attack_task)
+    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
+        """
+        执行村庄状态逻辑 - 使用策略模式
+        """
+        print(f"[VILLAGE] 使用策略模式执行村庄功能...")
         
-        # 任务2: 收集资源 (中等优先级)
-        collect_resources_task = StateTask(
-            name="collect_resources", 
-            description="收集村庄中的资源",
-            condition=lambda detections: self._has_collectible_resources(detections),
-            action=self._collect_resources_action,
-            priority=5
-        )
-        self.add_task(collect_resources_task)
+        # 使用功能注册表执行启用的功能
+        result = feature_registry.execute_features(detections, window_info, self.config)
         
-        # 任务3: 通过find_now计算attack位置 (低优先级备用方案)
-        attack_by_find_now_task = StateTask(
-            name="attack_by_find_now",
-            description="通过find_now按钮计算attack按钮位置",
-            condition=lambda detections: len(self.get_detections_by_class(detections, "find_now")) > 0,
-            action=self._attack_by_find_now_action,
-            priority=3
-        )
-        self.add_task(attack_by_find_now_task)
+        # 如果没有策略返回状态转换，使用备用逻辑
+        if result is None:
+            result = self._fallback_logic(detections, window_info)
+            
+        return result
         
-        # 任务4: 默认等待 (最低优先级)
-        wait_task = StateTask(
-            name="wait",
-            description="等待新的机会出现",
-            condition=lambda detections: True,  # 总是满足条件
-            action=self._wait_action,
-            priority=1
-        )
-        self.add_task(wait_task)
-    
-    def _has_collectible_resources(self, detections: List[Detection]) -> bool:
-        """检查是否有可收集的资源"""
-        # 这里可以检测各种资源建筑上的收集标识
-        # 例如：金币矿、圣水收集器等建筑上的收集提示
-        resource_indicators = ["collect_gold", "collect_elixir", "collect_dark_elixir"]
-        for indicator in resource_indicators:
-            if self.get_detections_by_class(detections, indicator):
-                return True
-        return False
-    
-    def _start_attack_action(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """开始攻击任务"""
-        attack_detection = self.get_best_detection(detections, "attack")
-        if attack_detection:
-            print("[VILLAGE] 直接检测到attack按钮")
-            self._click_detection(attack_detection, window_info)
-            time.sleep(2)  # 等待界面切换
-            return GameState.FINDING_OPPONENT
-        return None
-    
-    def _collect_resources_action(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """收集资源任务"""
-        print("[VILLAGE] 收集资源...")
+    def _fallback_logic(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
+        """备用逻辑：当策略模式无法处理时的降级方案"""
+        print("[VILLAGE] 执行备用逻辑...")
         
-        # 收集各种资源
-        resource_indicators = ["collect_gold", "collect_elixir", "collect_dark_elixir"]
-        collected_any = False
-        
-        for indicator in resource_indicators:
-            resource_detections = self.get_detections_by_class(detections, indicator)
-            for detection in resource_detections[:3]:  # 最多收集3个
-                self._click_detection(detection, window_info)
-                time.sleep(0.5)  # 收集间隔
-                collected_any = True
-        
-        if collected_any:
-            print("[VILLAGE] 资源收集完成")
-            time.sleep(1)
-        
-        return None  # 收集完继续留在村庄状态
-    
-    def _attack_by_find_now_action(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """通过find_now计算attack位置"""
-        find_now_detection = self.get_best_detection(detections, "find_now")
-        if find_now_detection:
-            print("[VILLAGE] 通过find_now按钮计算attack位置")
-            attack_pos = self.calculate_relative_position(
-                find_now_detection, 
-                self.attack_offset_from_find_now
-            )
-            self._click_position(attack_pos, window_info)
-            time.sleep(2)
-            return GameState.FINDING_OPPONENT
-        return None
-    
-    def _wait_action(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """等待任务"""
+        # 通过find_now计算attack位置（备用方案）
+        if self.config.get('attack', False):
+            find_now_detection = self.get_best_detection(detections, "find_now")
+            if find_now_detection:
+                print("[VILLAGE] 通过find_now按钮计算attack位置")
+                attack_pos = self.calculate_relative_position(
+                    find_now_detection, 
+                    (0, -50)  # attack按钮相对于find_now的位置
+                )
+                self._click_position(attack_pos, window_info)
+                time.sleep(2)
+                return GameState.FINDING_OPPONENT
+                
+        # 默认等待
         print("[VILLAGE] 等待中...")
         time.sleep(1)
         return None
-    
-    def _click_detection(self, detection: Detection, window_info: WindowInfo):
-        """点击检测到的目标"""
-        screen_x = window_info.left + detection.center[0]
-        screen_y = window_info.top + detection.center[1]
         
-        print(f"[CLICK] 点击检测目标: {detection.class_name} "
-              f"at ({screen_x}, {screen_y}), conf: {detection.confidence:.2f}")
+    def update_config(self, new_config: Dict[str, Any]):
+        """更新功能配置"""
+        self.config.update(new_config)
+        print(f"[VILLAGE] 配置已更新: {self.config}")
         
-        pyautogui.moveTo(screen_x, screen_y, duration=0.1)
-        pyautogui.click()
+    def get_available_features(self):
+        """获取可用功能列表（用于GUI）"""
+        return feature_registry.get_available_features()
     
     def _click_position(self, position: tuple, window_info: WindowInfo, is_relative: bool = True):
         """点击指定位置"""
