@@ -24,7 +24,8 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from core import COCGameController
-from core.game_modes import GameMode, TaskType, GameModeManager
+from core.mode_manager import mode_manager
+from features.base import GameMode
 
 
 class COCAutoGUI:
@@ -33,7 +34,8 @@ class COCAutoGUI:
     def __init__(self):
         self.root = tk.Tk()
         self.controller: Optional[COCGameController] = None
-        self.mode_manager = GameModeManager()
+        # 使用全局模式管理器
+        # self.mode_manager = mode_manager (已经是全局实例)
         self.is_running = False
         self.worker_thread: Optional[threading.Thread] = None
         
