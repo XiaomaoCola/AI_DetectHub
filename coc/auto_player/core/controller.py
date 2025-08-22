@@ -13,7 +13,8 @@ from .states.village import VillageHandler
 from .states.finding import FindingOpponentHandler  
 from .states.attacking import AttackingHandler
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
-from .game_modes import GameModeManager, HomeVillageHandler, BuilderBaseHandler
+from .mode_manager import mode_manager
+from ..features.base import GameMode
 
 
 class COCGameController:
@@ -23,20 +24,15 @@ class COCGameController:
                  model_path: str,
                  window_keyword: str = "BlueStacks",
                  config_path: str = None,
-                 feature_config: dict = None):
+                 initial_mode: GameMode = None):
         
         # 基础配置
         self.model_path = model_path
         self.window_keyword = window_keyword
         
-        # 功能配置（用户可通过GUI设置的功能开关）
-        self.feature_config = feature_config or {
-            'collect_resources': True,
-            'attack': True,
-            'clan_capital': False,
-            'train_troops': False,
-            'check_army_ready': True
-        }
+        # 设置初始游戏模式
+        if initial_mode:
+            mode_manager.set_mode(initial_mode)
         
         # 初始化配置管理器
         self.config_manager = MultiConfigManager(config_path)
@@ -56,13 +52,6 @@ class COCGameController:
         self.state_registry = StateHandlerRegistry()
         self._register_handlers()
         
-        # 游戏模式管理器
-        self.mode_manager = GameModeManager()
-        self.mode_handlers = {
-            'home_village': HomeVillageHandler(),
-            'builder_base': BuilderBaseHandler()
-        }
-        
         # 统计信息
         self.battle_count = 0
         self.session_start_time = time.time()
@@ -74,7 +63,7 @@ class COCGameController:
     def _register_handlers(self):
         """注册所有状态处理器"""
         handlers = [
-            VillageHandler(self.feature_config),  # 传入功能配置
+            VillageHandler(),  # 使用新的模式系统
             FindingOpponentHandler(),
             AttackingHandler(),
             # 可以继续添加其他状态处理器
@@ -83,23 +72,31 @@ class COCGameController:
         for handler in handlers:
             self.state_registry.register(handler)
             
-    def update_feature_config(self, new_config: dict):
-        """更新功能配置"""
-        self.feature_config.update(new_config)
+    def set_game_mode(self, mode: GameMode):
+        """设置游戏模式"""
+        mode_manager.set_mode(mode)
+        print(f"[CONTROLLER] 设置游戏模式: {mode_manager.get_mode_display_name(mode)}")
         
-        # 更新村庄处理器的配置
-        village_handler = self.state_registry.get_handler(GameState.VILLAGE)
-        if village_handler:
-            village_handler.update_config(self.feature_config)
-            
-        print(f"[CONTROLLER] 功能配置已更新: {self.feature_config}")
+    def get_current_mode(self) -> GameMode:
+        """获取当前游戏模式"""
+        return mode_manager.get_current_mode()
         
-    def get_available_features(self):
-        """获取可用功能列表"""
-        village_handler = self.state_registry.get_handler(GameState.VILLAGE)
-        if village_handler:
-            return village_handler.get_available_features()
-        return []
+    def update_mode_config(self, new_config: dict, mode: GameMode = None):
+        """更新指定模式的功能配置"""
+        mode_manager.update_mode_config(new_config, mode)
+        print(f"[CONTROLLER] 模式配置已更新")
+        
+    def get_available_features(self, mode: GameMode = None):
+        """获取指定模式的可用功能列表"""
+        return mode_manager.get_available_features(mode)
+        
+    def get_all_modes(self):
+        """获取所有支持的游戏模式"""
+        return mode_manager.get_all_modes()
+        
+    def get_mode_summary(self):
+        """获取当前模式摘要"""
+        return mode_manager.get_mode_summary()
             
     def initialize(self):
         """初始化控制器"""

@@ -3,50 +3,49 @@ import pyautogui
 from typing import List, Optional, Dict, Any
 
 from ..state_machine import StateHandler, GameState, Detection, WindowInfo
-from ..features import feature_registry
-from ..village_features import register_village_features
+from ..mode_manager import mode_manager
 
 
 class VillageHandler(StateHandler):
-    """村庄状态处理器 - 使用策略模式"""
+    """村庄状态处理器 - 支持多模式的功能策略"""
     
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self):
         super().__init__(GameState.VILLAGE)
         
-        # 功能配置（用户可通过GUI设置）
-        self.config = config or {
-            'collect_resources': True,
-            'attack': True, 
-            'clan_capital': False,
-            'train_troops': False,
-            'check_army_ready': True
-        }
-        
-        # 注册村庄功能策略
-        register_village_features()
-        
-        # 村庄状态的特征标识
-        self.required_indicators = ["find_now"]  # Builder Base特有的find_now按钮  
-        self.optional_indicators = ["attack"]    # 可能存在的attack按钮
+        # 村庄状态的特征标识 
+        self.village_indicators = ["find_now", "attack", "clan_capital_button"]  # 村庄相关按钮
         
     def can_handle(self, detections: List[Detection]) -> bool:
         """
         判断是否为村庄状态
-        村庄状态特征：有find_now按钮（Builder Base独有）
+        村庄状态特征：有村庄相关的UI元素
         """
-        find_now_detections = self.get_detections_by_class(detections, "find_now")
-        return len(find_now_detections) > 0
+        # 检查是否有村庄相关的UI元素
+        for indicator in self.village_indicators:
+            if self.get_detections_by_class(detections, indicator):
+                return True
+        return False
         
     def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """
-        执行村庄状态逻辑 - 使用策略模式
+        执行村庄状态逻辑 - 使用多模式功能策略
         """
-        print(f"[VILLAGE] 使用策略模式执行村庄功能...")
+        print(f"[VILLAGE] 执行村庄功能...")
         
-        # 使用功能注册表执行启用的功能
-        result = feature_registry.execute_features(detections, window_info, self.config)
+        # 自动检测并设置游戏模式
+        mode_detected = mode_manager.auto_detect_and_set_mode(detections)
+        current_mode = mode_manager.get_current_mode()
         
-        # 如果没有策略返回状态转换，使用备用逻辑
+        if current_mode is None:
+            print("[VILLAGE] 警告: 无法识别当前游戏模式")
+            return self._fallback_logic(detections, window_info)
+        
+        print(f"[VILLAGE] 当前模式: {mode_manager.get_mode_display_name(current_mode)}")
+        
+        # 使用模式管理器执行当前模式下的功能
+        result = mode_manager.execute_current_mode_features(detections, window_info)
+        
+        # 如果没有功能执行或状态转换，使用备用逻辑
         if result is None:
             result = self._fallback_logic(detections, window_info)
             
@@ -74,14 +73,17 @@ class VillageHandler(StateHandler):
         time.sleep(1)
         return None
         
-    def update_config(self, new_config: Dict[str, Any]):
-        """更新功能配置"""
-        self.config.update(new_config)
-        print(f"[VILLAGE] 配置已更新: {self.config}")
+    def update_mode_config(self, new_config: Dict[str, Any], mode=None):
+        """更新指定模式的功能配置"""
+        mode_manager.update_mode_config(new_config, mode)
         
-    def get_available_features(self):
+    def get_available_features(self, mode=None):
         """获取可用功能列表（用于GUI）"""
-        return feature_registry.get_available_features()
+        return mode_manager.get_available_features(mode)
+        
+    def get_current_mode_summary(self):
+        """获取当前模式摘要"""
+        return mode_manager.get_mode_summary()
     
     def _click_position(self, position: tuple, window_info: WindowInfo, is_relative: bool = True):
         """点击指定位置"""
