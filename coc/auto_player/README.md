@@ -16,22 +16,32 @@ auto_player/
 │   ├── mode_manager.py        # 🎮 模式管理器 (Home Village / Builder Base)
 │   ├── state_machine.py       # 状态机和基类
 │   ├── ui_manager.py          # UI管理器
-│   └── states/               # 状态处理器
+│   └── states/               # 状态处理器 (按模式分离)
 │       ├── __init__.py
-│       ├── village.py         # 村庄状态 (支持双模式)
-│       ├── finding.py         # 寻找对手状态
-│       └── attacking.py       # 攻击状态
+│       ├── home_village/      # 🏠 主村庄状态处理器
+│       │   ├── __init__.py
+│       │   └── village.py     # 主村庄村庄状态
+│       ├── builder_base/      # 🏗️ 建筑工人基地状态处理器
+│       │   ├── __init__.py
+│       │   └── village.py     # 建筑工人基地村庄状态
+│       ├── finding.py         # 寻找对手状态 (通用)
+│       └── attacking.py       # 攻击状态 (通用)
 ├── features/                  # 🌟 功能策略系统 (新架构)
 │   ├── __init__.py
 │   ├── base.py               # 策略基类和注册表
 │   ├── home_village_features.py    # 🏠 主村庄功能策略
 │   └── builder_base_features.py    # 🏗️ 建筑工人基地功能策略
-├── config/                   # ⚙️ 配置文件
-│   ├── main_config.yaml       # 全局配置
-│   ├── village_config.yaml    # 村庄状态配置
-│   ├── finding_config.yaml    # 寻找对手配置
-│   ├── attacking_config.yaml  # 攻击状态配置
-│   └── ui_elements.yaml      # UI元素通用配置
+├── config/                   # ⚙️ 配置文件 (按模式分离)
+│   ├── README.md              # 配置说明文档
+│   ├── main_config.yaml       # 🌍 全局配置
+│   ├── ui_elements.yaml       # 🎨 UI元素通用配置
+│   ├── home_village/          # 🏠 主村庄配置
+│   │   └── village_config.yaml
+│   ├── builder_base/          # 🏗️ 建筑工人基地配置  
+│   │   └── village_config.yaml
+│   └── states/               # 🔄 通用状态配置
+│       ├── finding_config.yaml
+│       └── attacking_config.yaml
 ├── utils/                    # 🛠️ 工具函数
 │   ├── __init__.py
 │   └── helpers.py            # 通用工具函数
@@ -101,19 +111,32 @@ python main.py --dry-run
 - `surrender_button` - 投降按钮（攻击状态）
 
 ### 配置文件系统
-现在使用模块化配置，每个状态都有独立的配置文件：
+采用**按模式分离**的配置系统，完美匹配新的Feature-Driven架构：
 
-- **`main_config.yaml`** - 全局设置（模型路径、窗口配置等）
-- **`village_config.yaml`** - 村庄状态专用配置  
-- **`finding_config.yaml`** - 寻找对手状态配置
-- **`attacking_config.yaml`** - 攻击状态配置
-- **`ui_elements.yaml`** - UI元素通用属性
+**🏠 主村庄配置** (`home_village/village_config.yaml`)：
+- 5个功能的独立开关配置
+- 主村庄特有UI元素识别
+- 暗黑重油等专属资源配置
+
+**🏗️ 建筑工人基地配置** (`builder_base/village_config.yaml`)：
+- 3个功能的独立开关配置  
+- find_now按钮位置计算
+- 简化的资源收集配置
+
+**🔄 通用状态配置** (`states/`)：
+- `finding_config.yaml` - 寻找对手状态
+- `attacking_config.yaml` - 攻击状态
+
+**🌍 全局配置**：
+- `main_config.yaml` - 系统级设置
+- `ui_elements.yaml` - UI元素通用属性
 
 **优势：**
-- 🎯 **精确修改**：只需编辑相关状态的配置文件
-- 🔒 **降低风险**：不会误改其他状态的设置
-- 📁 **易于管理**：配置职责清晰分离
-- 🔄 **便于更新**：游戏UI更新只需调整对应文件
+- 🎮 **模式分离**：每个游戏模式有独立的配置空间
+- 🎯 **功能导向**：基于Feature-Driven设计的配置结构
+- 🔒 **降低风险**：模式间配置完全隔离
+- 📁 **清晰结构**：配置文件结构与代码结构一致
+- 🔄 **易于维护**：详细的配置说明文档
 
 ## 🎮 工作流程
 
@@ -178,11 +201,35 @@ class FeatureType(Enum):
 ```
 
 ### 添加新状态处理器
+
+**为特定模式添加状态处理器：**
+```python
+# core/states/home_village/custom.py
+from ....features.base import GameMode
+from ...state_machine import StateHandler, GameState
+from ...mode_manager import mode_manager
+
+class HomeVillageCustomHandler(StateHandler):
+    def __init__(self):
+        super().__init__(GameState.CUSTOM)
+    
+    def can_handle(self, detections):
+        # 检查是否为主村庄环境
+        clan_capital = [d for d in detections if d.class_name == "clan_capital_button"]
+        return len(clan_capital) > 0
+        
+    def execute(self, detections, window_info):
+        mode_manager.set_mode(GameMode.HOME_VILLAGE)
+        # 执行主村庄特定逻辑
+        return None
+```
+
+**添加通用状态处理器：**
 ```python
 # core/states/custom.py
 from ..state_machine import StateHandler, GameState
 
-class CustomHandler(StateHandler):
+class GenericCustomHandler(StateHandler):
     def __init__(self):
         super().__init__(GameState.CUSTOM)
     

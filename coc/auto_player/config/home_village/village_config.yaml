@@ -1,0 +1,81 @@
+# 主村庄(Home Village)村庄状态配置文件
+# 主村庄界面的功能配置
+
+# 状态基本信息
+state_name: "home_village"
+description: "主村庄状态，执行收集资源、攻击、部落都城等功能"
+game_mode: "HOME_VILLAGE"
+
+# 状态识别标识
+indicators:
+  # 主村庄特有标识
+  preferred: ["clan_capital_button", "barracks_button"]  # 优先识别的HV特有元素
+  optional: ["attack"]                                   # 可选的通用元素
+  forbidden: ["find_now"]                               # 不能出现的BB元素
+
+# 功能开关配置（默认值）
+features:
+  hv_collect_resources: true     # 收集资源
+  hv_attack: true               # 自动攻击
+  hv_clan_capital: false        # 部落都城
+  hv_train_troops: false        # 训练部队
+  hv_upgrade_buildings: false   # 升级建筑
+  check_army_ready: true        # 检查军队准备状态
+
+# 功能执行优先级
+feature_priority:
+  - hv_collect_resources        # 收集资源优先级最高
+  - hv_train_troops            # 训练部队
+  - hv_upgrade_buildings       # 升级建筑
+  - hv_attack                  # 攻击
+  - hv_clan_capital           # 部落都城
+
+# 相对位置配置（暂时保留备用）
+relative_positions:
+  # 可能用到的位置偏移
+  attack_fallback: [0, 0]      # 备用攻击按钮位置
+
+# 操作配置
+actions:
+  primary_strategy: "feature_driven"  # 使用功能驱动策略
+  fallback_strategy: "direct_attack"  # 备用策略：直接攻击
+    
+# 时间配置
+timing:
+  max_duration: 45              # 状态最大持续时间（秒）
+  click_delay: 0.1              # 点击后延迟
+  state_transition_delay: 2.0   # 状态切换等待时间
+  feature_check_interval: 0.5   # 功能检查间隔
+
+# UI元素验证
+element_validation:
+  clan_capital_button:
+    min_confidence: 0.6
+    min_size: [80, 30]
+    max_size: [200, 80]
+    
+  attack:
+    min_confidence: 0.5
+    min_size: [50, 20]
+    max_size: [150, 70]
+    
+  barracks_button:
+    min_confidence: 0.6
+    min_size: [60, 30]
+    max_size: [180, 90]
+
+# 资源收集配置
+resource_collection:
+  max_collections_per_cycle: 5   # 每轮最多收集数量
+  collection_interval: 0.5       # 收集间隔
+  resource_types:
+    - gold_collector
+    - elixir_collector 
+    - dark_elixir_collector
+
+# 调试配置
+debug:
+  log_detections: true
+  log_feature_execution: true
+  log_mode_detection: true
+  highlight_indicators: true

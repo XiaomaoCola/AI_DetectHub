@@ -9,9 +9,7 @@ from ultralytics import YOLO
 import win32gui
 
 from .state_machine import GameState, Detection, WindowInfo, StateHandlerRegistry
-from .states.village import VillageHandler
-from .states.finding import FindingOpponentHandler  
-from .states.attacking import AttackingHandler
+from .states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
 from ..features.base import GameMode
@@ -63,10 +61,13 @@ class COCGameController:
     def _register_handlers(self):
         """注册所有状态处理器"""
         handlers = [
-            VillageHandler(),  # 使用新的模式系统
+            # 注册两个模式的村庄状态处理器
+            HomeVillageHandler(),        # 主村庄状态处理器
+            BuilderBaseVillageHandler(),  # 建筑工人基地状态处理器
+            
+            # 通用状态处理器
             FindingOpponentHandler(),
             AttackingHandler(),
-            # 可以继续添加其他状态处理器
         ]
         
         for handler in handlers:

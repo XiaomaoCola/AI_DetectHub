@@ -1,0 +1,95 @@
+# 建筑工人基地(Builder Base)村庄状态配置文件  
+# 建筑工人基地界面的功能配置
+
+# 状态基本信息
+state_name: "builder_base"
+description: "建筑工人基地状态，执行收集资源、攻击、升级建筑等功能"
+game_mode: "BUILDER_BASE"
+
+# 状态识别标识
+indicators:
+  required: ["find_now"]        # 必须检测到的BB特有元素
+  optional: ["attack"]          # 可选的通用元素
+  forbidden: ["clan_capital_button"]  # 不能出现的HV元素
+
+# 功能开关配置（默认值）
+features:
+  bb_collect_resources: true    # 收集资源
+  bb_attack: true              # 自动攻击
+  bb_upgrade_buildings: false  # 升级建筑
+  check_army_ready: true       # 检查军队准备状态
+
+# 功能执行优先级
+feature_priority:
+  - bb_collect_resources       # 收集资源优先级最高
+  - bb_upgrade_buildings      # 升级建筑
+  - bb_attack                 # 攻击
+
+# 相对位置配置
+relative_positions:
+  # attack按钮相对于find_now按钮的位置
+  attack_from_find_now: [0, -50]
+  # 其他可能用到的位置
+  upgrade_area: [0, 100]
+
+# 固定位置配置（基于屏幕比例 0.0-1.0）  
+fixed_positions:
+  # 备用attack按钮位置
+  attack_backup: [0.5, 0.35]
+  # 安全点击区域
+  safe_area: [0.5, 0.5]
+
+# 操作配置
+actions:
+  primary_strategy: "feature_driven"     # 使用功能驱动策略
+  fallback_strategy: "find_now_attack"   # 备用策略：通过find_now计算attack位置
+    
+# 时间配置
+timing:
+  max_duration: 30              # 状态最大持续时间（秒）
+  click_delay: 0.1              # 点击后延迟
+  state_transition_delay: 2.0   # 状态切换等待时间
+  feature_check_interval: 0.5   # 功能检查间隔
+
+# UI元素验证
+element_validation:
+  find_now:
+    min_confidence: 0.6         # 最小置信度
+    min_size: [60, 25]          # 最小尺寸 [width, height]
+    max_size: [200, 80]         # 最大尺寸
+    
+  attack:
+    min_confidence: 0.5
+    min_size: [50, 20]
+    max_size: [150, 70]
+
+# 资源收集配置
+resource_collection:
+  max_collections_per_cycle: 3   # 每轮最多收集数量（BB资源较少）
+  collection_interval: 0.5       # 收集间隔
+  resource_types:
+    - bb_gold_collector
+    - bb_elixir_collector
+    - collect_gold            # 通用收集标识
+    - collect_elixir
+
+# 攻击配置
+attack:
+  use_find_now_calculation: true  # 使用find_now计算attack位置
+  attack_offset_from_find_now: [0, -50]  # 攻击按钮相对find_now的偏移
+
+# 升级配置
+upgrade:
+  check_upgrade_indicators: true
+  max_upgrades_per_cycle: 1      # 每轮最多升级数量
+  upgrade_types:
+    - bb_upgrade_available
+    - upgrade_available          # 通用升级标识
+
+# 调试配置
+debug:
+  log_detections: true
+  log_feature_execution: true
+  log_mode_detection: true
+  log_find_now_calculations: true
+  highlight_indicators: true
