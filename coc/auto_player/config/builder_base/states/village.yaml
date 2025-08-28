@@ -1,0 +1,80 @@
+# 建筑工人基地村庄状态配置文件
+# 建筑工人基地主界面的UI配置
+
+# 状态基本信息
+state_name: "builder_base_village"
+description: "建筑工人基地村庄状态，可以进行建筑管理、资源收集和对战准备"
+
+# 状态识别标识
+indicators:
+  required: 
+    - "builder_hut"             # 建筑工人小屋
+    - "versus_battle_button"    # VS对战按钮
+  optional:
+    - "gold_mine"               # 金矿
+    - "elixir_collector"        # 圣水收集器
+    - "star_laboratory"         # 星辰实验室
+    - "gem_mine"                # 宝石矿
+    - "battle_machine"          # 战斗机器
+  forbidden: 
+    - "find_now"                # 不能有主村庄元素
+    - "clan_castle"             # 不能有部落城堡
+
+# 操作配置
+actions:
+  primary_action: "prepare_battle"
+  available_actions:
+    - "start_versus_battle"     # 开始VS对战
+    - "collect_resources"       # 收集资源
+    - "upgrade_buildings"       # 升级建筑
+    - "train_battle_machine"    # 训练战斗机器
+    - "manage_army_camps"       # 管理军队营地
+
+# 固定位置配置
+fixed_positions:
+  versus_battle_button: [0.85, 0.8]    # VS对战按钮位置
+  builder_hut: [0.5, 0.3]              # 建筑工人小屋
+  resource_area: [0.1, 0.1, 0.9, 0.7]  # 资源区域
+
+# 建筑工人基地特有功能
+builder_base_features:
+  # 对战系统
+  versus_battle:
+    enabled: true
+    auto_start: true            # 自动开始对战
+    max_battles_per_day: 3      # 每日最大对战次数
+    
+  # 资源管理
+  resource_management:
+    auto_collect: true          # 自动收集资源
+    priority_order:             # 收集优先级
+      - "gold_mine"
+      - "elixir_collector" 
+      - "gem_mine"
+      
+  # 建筑升级
+  building_upgrades:
+    auto_upgrade: false         # 自动升级建筑
+    upgrade_priority:           # 升级优先级
+      - "battle_machine"
+      - "army_camps"
+      - "defensive_buildings"
+      - "resource_buildings"
+
+# 战斗机器配置
+battle_machine:
+  auto_upgrade: true            # 自动升级战斗机器
+  ability_usage: "auto"         # 技能使用策略
+  repair_priority: "high"       # 修复优先级
+
+# 时间配置
+timing:
+  max_duration: 600             # 最大停留时间
+  check_interval: 3.0           # 检查间隔
+  battle_cooldown: 300          # 对战冷却时间
+
+# 调试配置
+debug:
+  log_builder_base_status: true
+  highlight_buildings: true
+  show_battle_readiness: true

@@ -4,5 +4,11 @@
 """
 
 from .village import BuilderBaseVillageHandler
+from .finding_opponent import BuilderBaseFindingOpponentHandler
+from .versus_battle import BuilderBaseVersusBattleHandler
 
-__all__ = ['BuilderBaseVillageHandler']
+__all__ = [
+    'BuilderBaseVillageHandler',
+    'BuilderBaseFindingOpponentHandler', 
+    'BuilderBaseVersusBattleHandler'
+]

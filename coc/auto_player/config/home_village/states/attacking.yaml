@@ -1,0 +1,44 @@
+# 主村庄攻击状态配置文件
+# 战斗界面的UI配置和部署策略
+
+# 状态基本信息
+state_name: "home_village_attacking"
+description: "主村庄攻击状态，部署部队进行战斗"
+
+# 状态识别标识
+indicators:
+  required: []
+  optional:
+    - "surrender_button"        # 投降按钮
+    - "battle_timer"            # 战斗计时器
+    - "troop_panel"             # 部队面板
+    - "enemy_base"              # 敌方基地
+  forbidden: 
+    - "find_now"                # 不能有村庄元素
+
+# 部队部署配置
+deployment:
+  max_troops: 20                # 最大部署兵力
+  deploy_interval: 1.0          # 部署间隔（秒）
+  deploy_strategy: "sequential" # 部署策略
+
+# 投降条件配置
+surrender_conditions:
+  troops_deployed: 15           # 部署兵力达到数量
+  time_elapsed: 60              # 攻击时间超过秒数
+  auto_surrender: true          # 是否自动投降
+
+# 固定位置配置
+fixed_positions:
+  surrender_button: [0.9, 0.1]  # 右上角投降按钮
+  default_deploy: [0.5, 0.7]    # 默认部署位置
+
+# 时间配置
+timing:
+  max_duration: 180             # 攻击最大持续时间
+  deploy_timeout: 60            # 部署超时时间
+
+# 调试配置
+debug:
+  log_deployment: true          # 记录部署操作
+  show_deploy_zones: true       # 显示部署区域

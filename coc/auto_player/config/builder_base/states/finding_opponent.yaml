@@ -1,0 +1,99 @@
+# 建筑工人基地寻找对手状态配置文件
+# VS对战匹配界面的UI配置
+
+# 状态基本信息
+state_name: "builder_base_finding_opponent"
+description: "建筑工人基地寻找对手状态，等待VS对战匹配"
+
+# 状态识别标识
+indicators:
+  required: 
+    - "searching_text"          # "Searching..." 文字
+    - "vs_matchmaking_ui"       # VS匹配界面
+  optional: 
+    - "cancel_button"           # 取消匹配按钮
+    - "loading_spinner"         # 加载动画
+    - "trophy_display"          # 奖杯显示
+  forbidden: 
+    - "versus_battle_button"    # 不能有村庄的VS按钮
+    - "find_now"                # 不能有主村庄元素
+
+# 进入VS对战的标识
+battle_ready_indicators:
+  any_of:                       # 检测到任一即可
+    - "vs_battle_ui"            # VS对战界面
+    - "opponent_base"           # 对手基地
+    - "battle_timer"            # 对战计时器
+    - "deployment_ready"        # 部署准备就绪
+
+# 匹配系统配置
+matchmaking:
+  max_wait_time: 60             # 最大等待时间（秒）
+  auto_retry: true              # 匹配失败自动重试
+  trophy_range_tolerance: 200   # 奖杯范围容差
+  
+  # 匹配偏好
+  match_preferences:
+    prefer_close_trophies: true # 优先相近奖杯
+    avoid_rematches: true       # 避免重复对手
+    fair_play_only: true        # 只匹配公平游戏
+
+# 固定位置配置  
+fixed_positions:
+  cancel_button: [0.5, 0.8]     # 取消按钮
+  retry_area: [0.5, 0.6]        # 重试点击区域
+  trophy_display: [0.5, 0.3]    # 奖杯显示位置
+
+# 操作配置
+actions:
+  wait_for_match: true          # 等待匹配完成
+  auto_cancel_on_timeout: true  # 超时自动取消
+  
+# 时间配置
+timing:
+  max_duration: 90              # 状态最大持续时间
+  check_interval: 2.0           # 状态检查间隔
+  retry_delay: 3.0              # 重试延迟
+  cancel_delay: 1.0             # 取消后延迟
+
+# 重试配置
+retry:
+  max_retries: 5                # 最大重试次数
+  retry_conditions:             # 重试条件
+    - "timeout"                 # 超时
+    - "match_failed"            # 匹配失败
+    - "connection_error"        # 连接错误
+    - "stuck"                   # 界面卡住
+
+# 超时处理
+timeout_handling:
+  action: "cancel_and_retry"    # 超时后的操作
+  fallback: "return_village"    # 最终备用操作
+  max_total_wait: 300           # 总最大等待时间
+
+# VS对战匹配特性
+versus_matchmaking_features:
+  # 奖杯系统
+  trophy_system:
+    current_trophies_tracking: true
+    win_loss_prediction: true
+    trophy_risk_assessment: true
+    
+  # 对手分析
+  opponent_preview:
+    analyze_base_layout: true   # 分析基地布局
+    check_defense_strength: true # 检查防御强度
+    estimate_win_probability: true # 估算胜率
+
+# 网络连接监控
+connection_monitoring:
+  ping_check: true              # 延迟检查
+  connection_stability: true    # 连接稳定性
+  auto_reconnect: true          # 自动重连
+
+# 调试配置  
+debug:
+  log_match_progress: true      # 记录匹配进度
+  show_wait_timer: true         # 显示等待计时器
+  log_retry_attempts: true      # 记录重试尝试
+  highlight_ready_indicators: true  # 高亮准备标识

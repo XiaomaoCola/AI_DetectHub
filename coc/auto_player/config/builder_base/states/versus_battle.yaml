@@ -1,0 +1,107 @@
+# 建筑工人基地VS对战状态配置文件
+# VS对战界面的UI配置和战斗策略
+
+# 状态基本信息
+state_name: "builder_base_versus_battle"
+description: "建筑工人基地VS对战状态，进行实时对战"
+
+# 状态识别标识
+indicators:
+  required:
+    - "vs_battle_ui"            # VS对战界面
+    - "battle_timer"            # 对战计时器
+  optional:
+    - "opponent_base"           # 对手基地
+    - "battle_machine"          # 战斗机器
+    - "troop_deployment_area"   # 部队部署区域
+    - "star_count"              # 星数显示
+  forbidden:
+    - "versus_battle_button"    # 不能有村庄的VS按钮
+
+# 部队部署配置
+deployment:
+  max_troops: 18                # 最大部署兵力
+  deploy_interval: 0.5          # 部署间隔（秒）
+  deploy_strategy: "smart"      # 部署策略: smart, aggressive, defensive
+  
+  # 部署优先级
+  troop_priority:
+    - "battle_machine"          # 优先部署战斗机器
+    - "sneaky_archers"          # 隐秘弓箭手
+    - "raged_barbarians"        # 狂暴野蛮人
+    - "boxer_giants"            # 拳击巨人
+    - "bomber"                  # 炸弹兵
+    - "baby_dragons"            # 小飞龙
+
+# 战斗机器配置
+battle_machine_config:
+  auto_deploy: true             # 自动部署战斗机器
+  ability_timing: "smart"       # 技能释放时机
+  target_priority:              # 攻击目标优先级
+    - "defensive_buildings"
+    - "battle_machine"
+    - "resource_buildings"
+
+# VS对战特有策略
+versus_battle_strategy:
+  # 部署策略
+  deployment_patterns:
+    smart:
+      description: "智能部署，优先摧毁关键建筑"
+      target_finder: true       # 启用目标查找
+      spread_deployment: false  # 集中部署
+      
+    aggressive:
+      description: "激进攻击，快速推进"
+      rush_core: true           # 直攻核心
+      mass_deployment: true     # 大量部署
+      
+    defensive:
+      description: "防守反击，稳妥取胜"
+      slow_advance: true        # 缓慢推进
+      preserve_troops: true     # 保存兵力
+
+# 实时对战特性
+real_time_features:
+  reaction_time: 0.3            # 反应时间（秒）
+  adaptive_strategy: true       # 自适应策略
+  opponent_analysis: true       # 对手分析
+  
+  # 实时决策
+  decision_factors:
+    - "remaining_time"          # 剩余时间
+    - "star_difference"         # 星数差异
+    - "destruction_percentage"  # 摧毁百分比
+    - "troop_advantage"         # 兵力优势
+
+# 胜利条件
+victory_conditions:
+  target_stars: 2               # 目标星数
+  min_destruction: 50           # 最小摧毁百分比
+  time_bonus_priority: true     # 优先时间加成
+
+# 固定位置配置
+fixed_positions:
+  battle_machine_deploy: [0.2, 0.8]    # 战斗机器部署位置
+  troop_deploy_area: [0.1, 0.7, 0.9, 0.9]  # 部队部署区域
+  ability_button: [0.1, 0.1]           # 技能按钮
+
+# 时间配置
+timing:
+  max_battle_duration: 180      # 最大对战时间
+  deployment_window: 120        # 部署时间窗口
+  ability_cooldown: 20          # 技能冷却时间
+  analysis_interval: 1.0        # 分析间隔
+
+# 错误恢复
+error_recovery:
+  stuck_detection: true         # 卡住检测
+  emergency_deploy: true        # 紧急部署
+  fallback_strategy: "aggressive"  # 备用策略
+
+# 调试配置
+debug:
+  log_deployment: true          # 记录部署操作
+  show_target_analysis: true    # 显示目标分析
+  battle_replay_save: false     # 保存战斗回放
+  performance_metrics: true     # 性能指标

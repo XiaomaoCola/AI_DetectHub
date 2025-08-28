@@ -1,16 +1,22 @@
+#!/usr/bin/env python3
+"""
+主村庄(Home Village)的攻击状态处理器
+专门处理主村庄模式下的攻击逻辑
+"""
+
 import time
 import random
 from typing import List, Optional
 
-from ..state_machine import StateHandler, GameState, Detection, WindowInfo
+from ...state_machine import StateHandler, GameState, Detection, WindowInfo
 
 
-class AttackingHandler(StateHandler):
-    """攻击状态处理器"""
+class HomeVillageAttackingHandler(StateHandler):
+    """主村庄攻击状态处理器"""
     
     def __init__(self):
         super().__init__(GameState.ATTACKING)
-        self.max_duration = 45  # 攻击最多持续45秒
+        self.max_duration = 180  # 主村庄攻击最多持续3分钟
         
         # 攻击状态特征标识
         self.attack_indicators = [
@@ -22,46 +28,50 @@ class AttackingHandler(StateHandler):
         
         # 部署相关
         self.troops_deployed = 0
-        self.max_troops = 10
-        self.deploy_interval = 0.8  # 部署间隔
+        self.max_troops = 20        # 主村庄兵力更多
+        self.deploy_interval = 1.0  # 部署间隔
         self.last_deploy_time = 0
         
-        # 部署区域（相对于屏幕的比例）
+        # 部署区域（相对于屏幕的比例）- 主村庄版本
         self.deploy_zones = [
             (0.3, 0.7),   # 左下
             (0.5, 0.8),   # 中下  
             (0.7, 0.7),   # 右下
             (0.2, 0.5),   # 左中
             (0.8, 0.5),   # 右中
+            (0.4, 0.6),   # 左中下
+            (0.6, 0.6),   # 右中下
         ]
     
     def can_handle(self, detections: List[Detection]) -> bool:
         """
-        判断是否为攻击状态
-        特征：有投降按钮或其他战斗UI元素
+        判断是否为主村庄攻击状态
+        特征：有投降按钮或其他战斗UI元素，且没有Builder Base特征
         """
         # 检查是否有攻击状态的特征标识
         for indicator in self.attack_indicators:
             if self.get_detections_by_class(detections, indicator):
-                return True
+                # 确保不是Builder Base的攻击状态
+                has_find_now = len(self.get_detections_by_class(detections, "find_now")) > 0
+                return not has_find_now
                 
-        # 如果没有村庄和寻找对手的特征，可能在攻击状态
+        # 如果没有村庄和寻找对手的特征，且没有Builder Base特征，可能在主村庄攻击状态
         has_find_now = len(self.get_detections_by_class(detections, "find_now")) > 0
-        has_village_ui = has_find_now  # 简化判断
+        has_village_ui = has_find_now  # Builder Base特征
         
         return not has_village_ui
     
     def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """
-        执行攻击状态操作：部署部队
+        执行主村庄攻击状态操作：部署部队
         """
-        print(f"[ATTACKING] 攻击状态 - 已部署 {self.troops_deployed}/{self.max_troops} 个兵")
+        print(f"[HOME_VILLAGE_ATTACKING] 主村庄攻击 - 已部署 {self.troops_deployed}/{self.max_troops} 个兵")
         
         current_time = time.time()
         
         # 检查是否应该投降
         if self._should_surrender(current_time):
-            print("[ATTACKING] 准备投降")
+            print("[HOME_VILLAGE_ATTACKING] 准备投降")
             return self._try_surrender(detections, window_info)
         
         # 部署部队
@@ -71,17 +81,16 @@ class AttackingHandler(StateHandler):
         return None  # 继续攻击状态
     
     def _should_surrender(self, current_time: float) -> bool:
-        """判断是否应该投降"""
+        """判断是否应该投降（主村庄版本）"""
         # 条件1：已部署足够的兵力
         if self.troops_deployed >= self.max_troops:
             return True
             
         # 条件2：攻击时间过长
-        if current_time - self.last_deploy_time > 15:  # 15秒没有部署
+        if current_time - self.last_deploy_time > 20:  # 20秒没有部署
             return True
             
         # 条件3：达到最大攻击时间
-        # 这里需要在主控制器中传入state_start_time
         return False
     
     def _can_deploy_troops(self, current_time: float) -> bool:
@@ -95,37 +104,37 @@ class AttackingHandler(StateHandler):
         return True
     
     def _deploy_troops(self, detections: List[Detection], window_info: WindowInfo):
-        """部署部队"""
+        """部署部队（主村庄版本）"""
         # 方式1：在检测到的空地部署
         empty_spaces = self.get_detections_by_class(detections, "empty_space")
         if empty_spaces:
             target = random.choice(empty_spaces)  # 随机选择一个空地
             self._click_detection(target, window_info)
-            print(f"[DEPLOY] 在检测到的空地部署第{self.troops_deployed + 1}个兵")
+            print(f"[HOME_VILLAGE_ATTACKING] 在空地部署第{self.troops_deployed + 1}个兵")
         else:
             # 方式2：在预设区域部署
             zone = random.choice(self.deploy_zones)
             x = int(window_info.width * zone[0])
             y = int(window_info.height * zone[1])
             self._click_position((x, y), window_info)
-            print(f"[DEPLOY] 在预设区域 {zone} 部署第{self.troops_deployed + 1}个兵")
+            print(f"[HOME_VILLAGE_ATTACKING] 在预设区域 {zone} 部署第{self.troops_deployed + 1}个兵")
         
         self.troops_deployed += 1
         self.last_deploy_time = time.time()
-        time.sleep(0.2)  # 短暂延迟
+        time.sleep(0.3)  # 稍长延迟
     
     def _try_surrender(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """尝试投降"""
         surrender_detection = self.get_best_detection(detections, "surrender_button")
         if surrender_detection:
-            print("[ATTACKING] 找到投降按钮，开始投降")
+            print("[HOME_VILLAGE_ATTACKING] 找到投降按钮，开始投降")
             self._click_detection(surrender_detection, window_info)
             time.sleep(1)
             return GameState.SURRENDERING
         else:
             # 使用相对位置点击投降按钮（通常在右上角）
             surrender_pos = (int(window_info.width * 0.9), int(window_info.height * 0.1))
-            print("[ATTACKING] 使用预设位置投降")
+            print("[HOME_VILLAGE_ATTACKING] 使用预设位置投降")
             self._click_position(surrender_pos, window_info)
             time.sleep(1)
             return GameState.SURRENDERING

@@ -4,5 +4,11 @@
 """
 
 from .village import HomeVillageHandler
+from .finding_opponent import HomeVillageFindingOpponentHandler
+from .attacking import HomeVillageAttackingHandler
 
-__all__ = ['HomeVillageHandler']
+__all__ = [
+    'HomeVillageHandler',
+    'HomeVillageFindingOpponentHandler',
+    'HomeVillageAttackingHandler'
+]

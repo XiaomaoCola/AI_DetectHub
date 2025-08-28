@@ -1,0 +1,43 @@
+# 家乡村庄状态配置文件
+# 主村庄界面的UI配置
+
+# 状态基本信息
+state_name: "home_village"
+description: "主村庄状态，可以进行资源收集、建筑升级等操作"
+
+# 状态识别标识
+indicators:
+  required: 
+    - "find_now"              # Find Now 攻击按钮
+    - "village_buildings"     # 村庄建筑
+  optional:
+    - "resource_collectors"   # 资源收集器
+    - "army_camps"            # 军队营地
+    - "clan_castle"           # 部落城堡
+  forbidden: 
+    - "attack_button"         # 不能有攻击界面元素
+    - "builder_base_hut"      # 不能有建筑工人基地元素
+
+# 操作配置
+actions:
+  primary_action: "collect_resources"
+  available_actions:
+    - "find_match"            # 寻找对手
+    - "collect_resources"     # 收集资源
+    - "upgrade_buildings"     # 升级建筑
+    - "train_troops"          # 训练部队
+
+# 固定位置配置
+fixed_positions:
+  find_now_button: [0.85, 0.75]    # Find Now 按钮位置
+  resource_area: [0.1, 0.1, 0.9, 0.6]  # 资源区域
+
+# 时间配置
+timing:
+  max_duration: 300           # 最大停留时间
+  check_interval: 5.0         # 检查间隔
+
+# 调试配置
+debug:
+  log_village_status: true
+  highlight_buildings: false
