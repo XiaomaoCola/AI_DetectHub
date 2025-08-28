@@ -1,0 +1,117 @@
+# State 4: 投降菜单状态配置 (自动战斗功能)
+# 下完兵出现Surrender按钮后点击投降
+
+# 状态基本信息
+state_name: "auto_battle_surrender_menu"
+description: "投降菜单状态，点击投降按钮结束战斗"
+priority: 4
+
+# 状态识别标识
+indicators:
+  required:
+    - "surrender_button"        # 投降按钮 (关键标识)
+  optional:
+    - "battle_timer"            # 战斗计时器 (还在战斗中)
+    - "opponent_base"           # 对手基地 (还在战斗界面)
+    - "vs_battle_ui"            # VS对战UI
+    - "battle_progress_ui"      # 战斗进度界面
+  forbidden:
+    - "okay"                    # 不能有确认按钮
+    - "return_home"             # 不能有返回按钮
+    - "find_now"                # 不能有Find Now
+
+# 投降按钮配置
+surrender_button_detection:
+  min_confidence: 0.7           # 最低置信度
+  search_areas:
+    primary: [0.8, 0.0, 1.0, 0.3]      # 右上角区域
+    secondary: [0.7, 0.0, 1.0, 0.4]    # 扩展搜索区域
+  expected_position: [0.9, 0.1] # 预期位置
+  
+  # 备用位置
+  fallback_positions:
+    - [0.9, 0.1]                # 右上角
+    - [0.85, 0.15]              # 稍微偏移
+    - [0.95, 0.05]              # 边角位置
+
+# 点击配置
+click_behavior:
+  click_delay: 0.1              # 点击延迟
+  double_click_prevention: true # 防止双击
+  min_click_interval: 2.0       # 最小点击间隔
+  max_click_attempts: 3         # 最大点击尝试次数
+
+# 状态转换检测
+state_transitions:
+  # 进入确认界面的标识
+  confirm_indicators:
+    - "okay"                    # Okay按钮
+    - "confirm_dialog"          # 确认对话框
+    - "yes_button"              # Yes按钮
+    
+  # 直接进入结果界面的标识
+  result_indicators:
+    - "return_home"             # Return Home按钮
+    - "battle_result_ui"        # 战斗结果界面
+    
+  # 意外返回村庄的标识
+  village_indicators:
+    - "builder_hut"             # 建筑工人小屋
+    - "gold_mine"               # 金矿
+
+# 固定位置配置
+fixed_positions:
+  surrender_button: [0.9, 0.1]  # 投降按钮标准位置
+  emergency_surrender: [0.85, 0.15]  # 紧急投降位置
+
+# 操作配置
+actions:
+  primary_action: "click_surrender"
+  fallback_action: "click_fixed_position"
+  state_transition_wait: 2.0    # 状态切换等待时间
+  
+# 等待配置
+waiting:
+  max_wait_time: 30             # 最大等待时间
+  response_timeout: 5           # 响应超时时间
+  retry_on_no_response: true    # 无响应时重试
+
+# 投降确认
+surrender_confirmation:
+  wait_for_dialog: true         # 等待确认对话框
+  dialog_timeout: 5             # 对话框超时时间
+  auto_confirm: true            # 自动确认
+
+# UI元素验证
+element_validation:
+  surrender_button:
+    min_confidence: 0.7
+    expected_region: [0.8, 0.0, 1.0, 0.3]  # 右上角区域
+    size_constraints:           # 尺寸约束
+      min_width: 30
+      min_height: 20
+      max_width: 100
+      max_height: 60
+
+# 错误处理
+error_handling:
+  max_retries: 5                # 最大重试次数
+  retry_delay: 2.0              # 重试延迟
+  escalation_actions:           # 升级操作
+    - "try_alternative_positions"  # 尝试备用位置
+    - "force_click_center"      # 强制点击中央
+    - "timeout_transition"      # 超时转换
+
+# 超时处理
+timeout_handling:
+  surrender_timeout: 15         # 投降操作超时
+  action_on_timeout: "force_proceed"  # 超时时强制进入下一状态
+  timeout_fallback: "emergency_exit"  # 超时备用操作
+
+# 调试配置
+debug:
+  log_surrender_attempts: true  # 记录投降尝试
+  log_button_detection: true    # 记录按钮检测
+  highlight_surrender_button: true  # 高亮投降按钮
+  show_click_coordinates: true  # 显示点击坐标
+  timing_analysis: false        # 时间分析

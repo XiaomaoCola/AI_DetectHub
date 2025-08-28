@@ -1,0 +1,92 @@
+# State 2: 攻击菜单状态配置 (自动战斗功能)
+# 点过Attack后出现Find Now按钮的界面
+
+# 状态基本信息
+state_name: "auto_battle_attack_menu"
+description: "攻击菜单状态，点击Find Now开始匹配"
+priority: 2
+
+# 状态识别标识
+indicators:
+  required:
+    - "find_now"                # Find Now按钮 (关键标识)
+  optional:
+    - "attack"                  # Attack按钮 (可能还在)
+    - "troop_selection_ui"      # 部队选择界面
+    - "battle_strategy_ui"      # 战术选择界面
+    - "army_overview"           # 军队概览
+  forbidden:
+    - "surrender_button"        # 不能有投降按钮
+    - "okay"                    # 不能有确认按钮
+    - "return_home"             # 不能有返回按钮
+    - "builder_hut"             # 不能有村庄建筑
+
+# Find Now按钮配置
+find_now_detection:
+  min_confidence: 0.7           # 最低置信度
+  search_area: [0.0, 0.0, 1.0, 1.0]  # 全屏搜索
+  expected_position: [0.5, 0.8] # 预期位置(屏幕下方中央)
+  click_timeout: 3              # 点击间隔
+
+# 部队配置检查
+troop_configuration:
+  enabled: true                 # 是否启用部队检查
+  check_army_composition: false # 检查军队组成
+  auto_select_troops: false     # 自动选择部队
+  preferred_army:               # 偏好军队配置
+    - "raged_barbarians"        # 狂暴野蛮人
+    - "sneaky_archers"          # 隐秘弓箭手
+    - "boxer_giants"            # 拳击巨人
+
+# 固定位置配置
+fixed_positions:
+  find_now_button: [0.5, 0.8]  # Find Now按钮位置
+  army_overview_area: [0.0, 0.7, 1.0, 1.0]  # 军队概览区域
+
+# 操作配置
+actions:
+  primary_action: "click_find_now"
+  click_delay: 0.1
+  state_transition_wait: 2.0    # 等待匹配开始
+  
+# 等待配置
+waiting:
+  max_wait_time: 30             # 最大等待时间
+  check_interval: 1.0           # 检查间隔
+  retry_on_timeout: true        # 超时重试
+
+# 状态转换检测
+state_transitions:
+  # 进入战斗的标识
+  battle_start_indicators:
+    - "surrender_button"
+    - "battle_timer"
+    - "opponent_base"
+    
+  # 回到村庄的标识  
+  village_return_indicators:
+    - "builder_hut"
+    - "gold_mine"
+
+# UI元素验证
+element_validation:
+  find_now:
+    min_confidence: 0.7
+    expected_region: [0.3, 0.6, 0.7, 1.0]  # 下方中央区域
+    color_validation: false     # 颜色验证(可选)
+    
+# 错误处理
+error_handling:
+  max_retries: 3
+  retry_delay: 3.0
+  fallback_actions:
+    - "click_center"            # 点击屏幕中央
+    - "wait_and_retry"          # 等待重试
+    - "return_to_village"       # 返回村庄
+
+# 调试配置
+debug:
+  log_find_now_detection: true
+  log_state_transitions: true
+  highlight_find_now_button: true
+  show_army_composition: false

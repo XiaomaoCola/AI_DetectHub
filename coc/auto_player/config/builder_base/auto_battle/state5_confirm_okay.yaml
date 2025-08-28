@@ -1,0 +1,139 @@
+# State 5: 确认Okay状态配置 (自动战斗功能)
+# 点完Surrender后出现确认对话框，点击Okay按钮确认投降
+
+# 状态基本信息
+state_name: "auto_battle_confirm_okay"
+description: "确认投降状态，点击Okay按钮确认操作"
+priority: 5
+
+# 状态识别标识
+indicators:
+  required:
+    - "okay"                    # Okay按钮 (关键标识)
+  optional:
+    - "confirm_dialog"          # 确认对话框
+    - "surrender_confirm_text"  # 投降确认文字
+    - "yes_button"              # Yes按钮 (备用)
+    - "confirm_button"          # Confirm按钮 (备用)
+    - "dialog_background"       # 对话框背景
+  forbidden:
+    - "return_home"             # 不能有返回按钮
+    - "find_now"                # 不能有Find Now
+    - "builder_hut"             # 不能有村庄建筑
+
+# Okay按钮配置
+okay_button_detection:
+  min_confidence: 0.7           # 最低置信度
+  search_areas:
+    primary: [0.3, 0.4, 0.7, 0.8]      # 屏幕中央区域
+    secondary: [0.2, 0.3, 0.8, 0.9]    # 扩展搜索区域
+  expected_position: [0.5, 0.6] # 预期位置(屏幕中央偏下)
+  
+  # 备用按钮识别
+  alternative_buttons:
+    - "yes_button"              # Yes按钮
+    - "confirm_button"          # Confirm按钮
+    - "accept_button"           # Accept按钮
+
+# 对话框检测
+dialog_detection:
+  detect_dialog_box: true       # 检测对话框
+  dialog_confidence: 0.6        # 对话框置信度
+  dialog_area: [0.2, 0.3, 0.8, 0.8]  # 对话框预期区域
+  
+  # 文字内容检测(可选)
+  text_recognition:
+    enabled: false              # 启用文字识别
+    keywords:                   # 关键词
+      - "surrender"
+      - "confirm"
+      - "okay"
+
+# 点击配置
+click_behavior:
+  click_delay: 0.1              # 点击延迟
+  confirmation_wait: 2.0        # 确认等待时间
+  min_click_interval: 1.5       # 最小点击间隔
+  max_click_attempts: 5         # 最大点击尝试次数
+
+# 固定位置配置
+fixed_positions:
+  okay_button: [0.5, 0.6]       # Okay按钮标准位置
+  center_confirm: [0.5, 0.55]   # 中央确认位置
+  dialog_center: [0.5, 0.5]     # 对话框中心
+
+# 状态转换检测
+state_transitions:
+  # 进入结果界面的标识
+  result_indicators:
+    - "return_home"             # Return Home按钮
+    - "battle_result_ui"        # 战斗结果界面
+    - "victory_defeat_text"     # 胜利/失败文字
+    
+  # 意外返回其他状态的标识
+  village_indicators:
+    - "builder_hut"             # 建筑工人小屋
+    - "gold_mine"               # 金矿
+    
+  attack_menu_indicators:
+    - "find_now"                # Find Now按钮
+
+# 操作配置
+actions:
+  primary_action: "click_okay"
+  fallback_actions:
+    - "click_alternative_button"  # 点击备用按钮
+    - "click_dialog_center"     # 点击对话框中心
+    - "click_screen_center"     # 点击屏幕中心
+  state_transition_wait: 2.0    # 状态切换等待时间
+
+# 等待配置
+waiting:
+  max_wait_time: 20             # 最大等待时间
+  dialog_appear_timeout: 5      # 对话框出现超时
+  response_timeout: 3           # 响应超时时间
+
+# UI元素验证
+element_validation:
+  okay_button:
+    min_confidence: 0.7
+    expected_region: [0.3, 0.4, 0.7, 0.8]  # 中央区域
+    size_constraints:           # 尺寸约束
+      min_width: 50
+      min_height: 25
+      max_width: 150
+      max_height: 80
+      
+  confirm_dialog:
+    min_confidence: 0.6
+    expected_region: [0.2, 0.3, 0.8, 0.8]  # 对话框区域
+
+# 错误处理
+error_handling:
+  max_retries: 5                # 最大重试次数
+  retry_delay: 1.5              # 重试延迟
+  escalation_strategy:          # 升级策略
+    - "try_alternative_buttons" # 尝试备用按钮
+    - "click_multiple_positions"  # 多位置点击
+    - "force_transition"        # 强制转换状态
+    
+# 超时处理
+timeout_handling:
+  okay_timeout: 10              # Okay按钮超时
+  dialog_timeout: 15            # 对话框总超时
+  action_on_timeout: "force_next_state"  # 超时动作
+  
+# 智能点击
+smart_clicking:
+  enabled: true                 # 启用智能点击
+  click_area_expansion: 0.1     # 点击区域扩展(比例)
+  multi_target_strategy: "best_confidence"  # 多目标策略
+  
+# 调试配置
+debug:
+  log_okay_detection: true      # 记录Okay检测
+  log_dialog_detection: true    # 记录对话框检测
+  highlight_okay_button: true   # 高亮Okay按钮
+  highlight_dialog: false       # 高亮对话框
+  show_alternative_buttons: true # 显示备用按钮
+  timing_details: false         # 时间详情

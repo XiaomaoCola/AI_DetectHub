@@ -1,0 +1,161 @@
+# State 6: 返回主页状态配置 (自动战斗功能)
+# 点完Okay后出现Return Home按钮，点击返回村庄完成战斗循环
+
+# 状态基本信息
+state_name: "auto_battle_return_home"
+description: "返回主页状态，点击Return Home完成战斗循环"
+priority: 6
+
+# 状态识别标识
+indicators:
+  required:
+    - "return_home"             # Return Home按钮 (关键标识)
+  optional:
+    - "battle_result_ui"        # 战斗结果界面
+    - "victory_defeat_text"     # 胜利/失败文字
+    - "stars_earned"            # 获得星数
+    - "resources_gained"        # 获得资源
+    - "trophies_change"         # 奖杯变化
+    - "experience_gained"       # 获得经验
+  forbidden:
+    - "find_now"                # 不能有Find Now
+    - "okay"                    # 不能有确认按钮
+    - "builder_hut"             # 不能有村庄建筑 (还未返回)
+
+# Return Home按钮配置
+return_home_detection:
+  min_confidence: 0.7           # 最低置信度
+  search_areas:
+    primary: [0.3, 0.6, 0.7, 1.0]      # 屏幕下方中央
+    secondary: [0.2, 0.5, 0.8, 1.0]    # 扩展搜索区域
+  expected_position: [0.5, 0.7] # 预期位置
+  
+  # 备用按钮识别
+  alternative_buttons:
+    - "home_button"             # Home按钮
+    - "back_to_village"         # Back to Village按钮
+    - "continue_button"         # Continue按钮
+
+# 战斗结果收集
+battle_results:
+  collect_results: true         # 收集战斗结果
+  result_timeout: 5             # 结果收集超时
+  
+  # 收集项目
+  collect_items:
+    victory_status: true        # 胜利状态
+    stars_earned: true          # 获得星数
+    resources_gained: true      # 获得资源
+    trophies_change: true       # 奖杯变化
+    experience_gained: false    # 获得经验
+    
+  # 结果验证
+  result_validation:
+    min_stars: 0                # 最少星数 
+    max_stars: 3                # 最多星数
+    expect_trophy_change: true  # 期望奖杯变化
+
+# 点击配置
+click_behavior:
+  click_delay: 0.1              # 点击延迟
+  return_wait: 2.0              # 返回等待时间
+  min_click_interval: 2.0       # 最小点击间隔
+  max_click_attempts: 5         # 最大点击尝试次数
+
+# 固定位置配置
+fixed_positions:
+  return_home_button: [0.5, 0.7]       # Return Home按钮标准位置
+  alternative_return: [0.5, 0.75]      # 备用返回位置
+  screen_center: [0.5, 0.5]            # 屏幕中心
+
+# 状态转换检测
+state_transitions:
+  # 成功返回村庄的标识
+  village_indicators:
+    - "builder_hut"             # 建筑工人小屋
+    - "gold_mine"               # 金矿
+    - "versus_battle_button"    # VS对战按钮
+    - "attack"                  # Attack按钮
+    
+  # 意外进入其他状态的标识
+  attack_menu_indicators:
+    - "find_now"                # Find Now按钮
+    
+  confirm_indicators:
+    - "okay"                    # Okay按钮
+
+# 循环完成检测
+cycle_completion:
+  verify_village_return: true   # 验证返回村庄
+  completion_timeout: 10        # 完成超时时间
+  success_indicators:           # 成功指标
+    - "builder_hut"
+    - "versus_battle_button"
+  
+  # 循环统计
+  cycle_statistics:
+    enabled: true               # 启用统计
+    track_battle_time: true     # 跟踪战斗时间
+    track_results: true         # 跟踪结果
+    track_efficiency: true      # 跟踪效率
+
+# 操作配置
+actions:
+  primary_action: "click_return_home"
+  fallback_actions:
+    - "click_alternative_button"  # 点击备用按钮
+    - "click_center_area"       # 点击中央区域
+    - "wait_and_retry"          # 等待重试
+  completion_wait: 2.0          # 完成等待时间
+
+# 等待配置
+waiting:
+  max_wait_time: 30             # 最大等待时间
+  result_display_time: 3        # 结果显示时间
+  return_transition_time: 5     # 返回转换时间
+
+# UI元素验证
+element_validation:
+  return_home:
+    min_confidence: 0.7
+    expected_region: [0.3, 0.6, 0.7, 1.0]  # 下方中央区域
+    size_constraints:           # 尺寸约束
+      min_width: 80
+      min_height: 30
+      max_width: 200
+      max_height: 80
+      
+  battle_result_ui:
+    min_confidence: 0.6
+    expected_region: [0.1, 0.1, 0.9, 0.9]  # 几乎全屏
+
+# 错误处理
+error_handling:
+  max_retries: 5                # 最大重试次数
+  retry_delay: 2.0              # 重试延迟
+  escalation_actions:           # 升级操作
+    - "try_multiple_positions"  # 尝试多个位置
+    - "force_village_return"    # 强制返回村庄
+    - "restart_cycle"           # 重启循环
+
+# 超时处理
+timeout_handling:
+  return_timeout: 20            # 返回操作超时
+  total_timeout: 45             # 总超时时间
+  action_on_timeout: "force_village_state"  # 超时强制进入村庄状态
+
+# 性能监控
+performance_monitoring:
+  enabled: true                 # 启用性能监控
+  track_cycle_time: true        # 跟踪循环时间
+  track_success_rate: true      # 跟踪成功率
+  log_performance_data: true    # 记录性能数据
+
+# 调试配置
+debug:
+  log_return_attempts: true     # 记录返回尝试
+  log_battle_results: true      # 记录战斗结果
+  highlight_return_button: true # 高亮返回按钮
+  show_result_collection: true  # 显示结果收集
+  cycle_completion_details: true # 循环完成详情
+  performance_metrics: false    # 性能指标

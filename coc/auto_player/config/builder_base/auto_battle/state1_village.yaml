@@ -1,0 +1,82 @@
+# State 1: 建筑工人基地村庄界面状态配置 (自动战斗功能)
+# 自动战斗循环的起始状态
+
+# 状态基本信息
+state_name: "auto_battle_village"
+description: "自动战斗村庄状态，寻找Attack按钮开始战斗循环"
+priority: 1
+
+# 状态识别标识
+indicators:
+  required:
+    - "builder_hut"             # 建筑工人小屋 (BB特有标识)
+  optional:
+    - "versus_battle_button"    # VS对战按钮
+    - "gold_mine"               # 金矿
+    - "elixir_collector"        # 圣水收集器
+    - "gem_mine"                # 宝石矿
+  forbidden:
+    - "find_now"                # 不能有Find Now (说明在其他状态)
+    - "surrender_button"        # 不能有投降按钮
+    - "okay"                    # 不能有确认按钮
+    - "return_home"             # 不能有返回按钮
+
+# 攻击按钮识别
+attack_button_detection:
+  primary_targets:
+    - "attack"                  # 主要的Attack按钮
+    - "versus_battle_button"    # VS对战按钮(备用)
+  search_areas:
+    attack_button_area: [0.7, 0.7, 1.0, 1.0]  # 右下角区域
+    vs_button_area: [0.6, 0.6, 1.0, 0.9]      # VS按钮区域
+
+# 资源收集配置
+resource_collection:
+  enabled: true
+  max_collectors_per_cycle: 3   # 每次最多点击3个收集器
+  confidence_threshold: 0.7     # 置信度要求
+  collection_delay: 0.3         # 收集间隔
+  priority_order:
+    - "gem_mine"                # 优先收集宝石矿
+    - "gold_mine"               # 金矿
+    - "elixir_collector"        # 圣水收集器
+
+# 固定位置配置
+fixed_positions:
+  attack_button_fallback: [0.85, 0.8]        # Attack按钮备用位置
+  vs_battle_button_fallback: [0.75, 0.75]    # VS按钮备用位置
+
+# 操作配置
+actions:
+  primary_action: "find_attack_button"
+  click_delay: 0.1              # 点击延迟
+  state_transition_wait: 1.5    # 状态切换等待时间
+  
+# 时间配置
+timing:
+  max_duration: 60              # 最大停留时间
+  check_interval: 2.0           # 检查间隔
+  resource_collection_timeout: 5 # 资源收集超时
+
+# UI元素验证
+element_validation:
+  builder_hut:
+    min_confidence: 0.6
+    expected_region: [0.3, 0.1, 0.8, 0.6]  # 预期区域
+    
+  attack_button:
+    min_confidence: 0.7
+    expected_region: [0.7, 0.7, 1.0, 1.0]  # 右下角
+
+# 错误处理
+error_handling:
+  max_retries: 3
+  retry_delay: 2.0
+  fallback_action: "wait_and_retry"
+
+# 调试配置
+debug:
+  log_resource_collection: true
+  log_button_search: true
+  highlight_attack_button: true
+  show_detection_confidence: false

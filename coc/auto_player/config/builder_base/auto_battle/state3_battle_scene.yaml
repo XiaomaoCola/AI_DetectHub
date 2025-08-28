@@ -1,0 +1,145 @@
+# State 3: 战斗场景状态配置 (自动战斗功能)
+# 点完Find Now进入战斗画面，自动部署直到可以投降
+
+# 状态基本信息
+state_name: "auto_battle_battle_scene"
+description: "战斗场景状态，自动部署部队并等待投降条件"
+priority: 3
+
+# 状态识别标识
+indicators:
+  required: []                  # 没有强制要求的元素
+  optional:
+    - "opponent_base"           # 对手基地
+    - "battle_timer"            # 战斗计时器
+    - "troop_deployment_area"   # 部队部署区域
+    - "battle_machine"          # 战斗机器
+    - "vs_battle_ui"            # VS对战UI
+  forbidden:
+    - "find_now"                # 不能有Find Now
+    - "okay"                    # 不能有确认按钮
+    - "return_home"             # 不能有返回按钮
+
+# 部署配置
+deployment:
+  max_troops: 18                # 最大兵力
+  deploy_interval: 0.6          # 部署间隔(秒)
+  battle_machine_priority: true # 优先部署战斗机器
+  
+  # 部署策略
+  strategy: "balanced"          # balanced, aggressive, defensive
+  
+  # 部署区域(屏幕比例)
+  zones:
+    - name: "left_bottom"
+      position: [0.2, 0.8]
+      weight: 3
+    - name: "center_bottom"
+      position: [0.5, 0.85]
+      weight: 4
+    - name: "right_bottom"
+      position: [0.8, 0.8]
+      weight: 3
+    - name: "left_mid"
+      position: [0.15, 0.6]
+      weight: 2
+    - name: "right_mid"
+      position: [0.85, 0.6]
+      weight: 2
+    - name: "left_center"
+      position: [0.3, 0.7]
+      weight: 2
+    - name: "right_center"
+      position: [0.7, 0.7]
+      weight: 2
+
+# 战斗机器配置
+battle_machine:
+  auto_deploy: true             # 自动部署
+  deploy_zone: [0.3, 0.8]       # 部署位置
+  ability_usage: "auto"         # 技能使用: auto, manual, off
+  priority: "first"             # 部署优先级
+
+# 投降条件
+surrender_conditions:
+  min_troops_deployed: 12       # 最少部署兵力
+  max_battle_time: 45           # 最大战斗时间(秒)
+  no_deploy_timeout: 20         # 无部署超时(秒)
+  auto_surrender: true          # 自动投降
+  
+  # 动态条件
+  dynamic_conditions:
+    troop_efficiency_threshold: 0.7  # 兵力效率阈值
+    time_based_scaling: true    # 基于时间的动态调整
+
+# 智能部署
+smart_deployment:
+  enabled: true                 # 启用智能部署
+  empty_space_priority: 0.7     # 空地优先级(70%概率选择检测到的空地)
+  random_offset_range: 20       # 随机偏移范围(像素)
+  
+  # 目标识别
+  target_recognition:
+    defensive_buildings: true   # 识别防御建筑
+    resource_buildings: false  # 识别资源建筑
+    empty_spaces: true          # 识别空地
+
+# 固定位置配置
+fixed_positions:
+  battle_machine_deploy: [0.3, 0.8]      # 战斗机器部署位置
+  emergency_deploy_area: [0.5, 0.7]      # 紧急部署区域
+  safe_deploy_bounds: [0.1, 0.5, 0.9, 0.9]  # 安全部署边界
+
+# 时间配置
+timing:
+  max_duration: 60              # 状态最大持续时间
+  deploy_timeout: 45            # 部署阶段超时
+  surrender_check_interval: 2.0 # 投降条件检查间隔
+  deploy_click_duration: 0.05   # 部署点击持续时间
+
+# 部署策略详细配置
+deployment_strategies:
+  balanced:
+    description: "均衡部署策略"
+    zone_selection: "weighted"  # 按权重选择
+    spread_factor: 0.8          # 分散系数
+    
+  aggressive:
+    description: "激进攻击策略"
+    zone_selection: "front_heavy"  # 前方重点
+    mass_deployment: true       # 集中部署
+    
+  defensive:
+    description: "稳妥推进策略"
+    zone_selection: "spread"    # 分散部署
+    preserve_troops: true       # 保护兵力
+
+# 错误恢复
+error_recovery:
+  stuck_detection: true         # 卡住检测
+  max_stuck_time: 15           # 最大卡住时间
+  recovery_actions:
+    - "emergency_deploy"        # 紧急部署
+    - "force_surrender"         # 强制投降
+    
+  deployment_failures:
+    max_failed_deploys: 3       # 最大部署失败次数
+    fallback_to_fixed_zones: true  # 回退到固定区域
+
+# UI元素验证
+element_validation:
+  battle_machine:
+    min_confidence: 0.6
+    expected_region: [0.0, 0.8, 0.4, 1.0]  # 左下角兵营区域
+    
+  empty_space:
+    min_confidence: 0.5
+    min_size: [15, 15]          # 最小空地尺寸
+    
+# 调试配置
+debug:
+  log_deployment: true          # 记录部署操作
+  log_surrender_conditions: true # 记录投降条件
+  show_deploy_zones: true       # 显示部署区域
+  highlight_battle_machine: true # 高亮战斗机器
+  deployment_heatmap: false     # 部署热力图
