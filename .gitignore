@@ -1,61 +1,30 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-
-
-# 以下都是gpt给的文件类型
-*.pt
-# Python
+# Python 运行时文件
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.env
-*.venv
-env/
-venv/
-ENV/
+
+# 虚拟环境
 .venv/
-.Python
-*.sqlite3
+venv/
+env/
 
-# VSCode
+# 开发环境配置
 .vscode/
-
-# PyCharm
 .idea/
-*.iml
 
-# macOS
+# 系统文件
 .DS_Store
-.AppleDouble
-.LSOverride
-
-# Windows
 Thumbs.db
-ehthumbs.db
 Desktop.ini
 
-# Log files
-*.log
+# 敏感信息
+*.env
 
-# Test output
-*.out
+# 只忽略训练过程中的中间模型
+runs/**/weights/last.pt
+
+# 临时文件
 *.tmp
-
-# 图片和调试输出（可选，建议你根据自己需求删减）
 debug/
-*.png
-
-# 你自己的模板、截图临时目录（比如 template/，screenshot/，如果有的话）
-templates/
-screenshot/
-
-# PaddleOCR缓存
-__pycache__/
-inference/
+screenshot/temp/
