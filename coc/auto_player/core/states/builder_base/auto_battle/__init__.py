@@ -7,7 +7,7 @@
 from .state1_village import AutoBattleVillageHandler
 from .state2_attack_menu import AttackMenuHandler  
 from .state3_battle_scene import BattleSceneHandler
-from .state4_surrender_menu import SurrenderMenuHandler
+from .state4_surrender import SurrenderMenuHandler
 from .state5_confirm_okay import ConfirmOkayHandler
 from .state6_return_home import ReturnHomeHandler
 

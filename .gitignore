@@ -6,6 +6,9 @@ __pycache__/
 
 # 虚拟环境
 .venv/
+.venv1/
+.venv2/
+.venv5/
 venv/
 env/
 

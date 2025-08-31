@@ -131,7 +131,7 @@ class BattleSceneHandler(StateHandler):
         surrender_button = self.get_best_detection(detections, "surrender_button")
         if surrender_button:
             print("[AUTO_BATTLE_SCENE] 找到投降按钮，准备投降")
-            return GameState.AUTO_BATTLE_SURRENDER_MENU
+            return GameState.AUTO_BATTLE_SURRENDER
         else:
             print("[AUTO_BATTLE_SCENE] 满足投降条件但未找到投降按钮，继续等待")
             return None

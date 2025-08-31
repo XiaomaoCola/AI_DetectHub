@@ -1,2 +1,0 @@
-attack
-find_now
