@@ -17,7 +17,7 @@ class BlueStacksDetector:
     def __init__(self, model_path=None, window_keyword="BlueStacks", conf_thres=0.55, 
                  cls_id=0, do_click=False, show_fps=True):
         # ====== 配置 ======
-        self.model_path = model_path or r"D:\python-project\AI_DetectHub\runs\detect\train2\weights\best.pt"
+        self.model_path = model_path or r"A:\Projects\AI_DetectHub\runs\detect\train\weights\best.pt"
         self.window_keyword = window_keyword
         self.conf_thres = conf_thres
         self.cls_id = cls_id
