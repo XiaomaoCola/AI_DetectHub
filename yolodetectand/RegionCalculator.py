@@ -1,13 +1,13 @@
-import ctypes
-import re
-import win32gui
-
-
 """
 这个类的功能是，给出区域的左上角和右下角的标准坐标，
 可以返回区域左上角和右上角的相对坐标。
 简单说就跟计算器一样，把窗口的长和高取出来跟标准坐标相乘。
 """
+
+import ctypes
+import re
+import win32gui
+
 
 class RegionCalculator:
     def __init__(self, window_keyword="BlueStacks"):

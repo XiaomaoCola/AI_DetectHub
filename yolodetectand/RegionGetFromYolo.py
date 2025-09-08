@@ -1,3 +1,31 @@
+"""
+这个模块用于从指定窗口（默认是 BlueStacks，可以改动，有个参数window_keyword）中截图，
+并使用 YOLO 模型（YOLOv8）进行目标检测。
+注意：这个模块只适用与YOLO，并不适用于其他的图像检测模型。
+
+需要的参数是：
+1. model_path： YOLO模型路径
+2. window_keyword： 窗口关键词
+3. conf_thres： 置信度阈值
+
+这个程序的运行方式：
+1. 查找目标窗口并置顶
+2. 截图窗口内容
+3. 使用指定的 YOLO 模型进行物体检测（这里是可以改模型位置的）
+4. 返回检测框的位置、类别名、置信度等信息
+
+然后这个程序返回结果的特征是：
+- 返回所有识别出来的方框，而不是一个类返回一个那种；
+- 检测结果为列表形式，包含所有检测框；
+- 每个元素为字典，结构如下：
+  {
+      'class_name': str,
+      'coords': (x1, y1, x2, y2),
+      'confidence': float,
+      'index': int
+  }
+"""
+
 import ctypes
 import re
 import cv2

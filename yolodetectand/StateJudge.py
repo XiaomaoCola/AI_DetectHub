@@ -1,6 +1,14 @@
+"""
+使用这个模块的话，需要初始化RegionCalculator这个模块，因为参数里包含从这个模块得到的结果。
+
+需要的参数是：
+1. config_path: 这是设置的yaml的路径
+2.
+"""
+
 import yaml
 import os
-from GetSpecificRegion import RegionCalculator
+from RegionCalculator import RegionCalculator
 
 
 class StateJudge:
