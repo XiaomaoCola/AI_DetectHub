@@ -3,7 +3,8 @@
 
 需要的参数是：
 1. config_path: 这是设置的yaml的路径
-2.
+2. detections： 从RegionCalculator这个模块里获得的。
+3. class_id
 """
 
 import yaml
@@ -11,7 +12,7 @@ import os
 from RegionCalculator import RegionCalculator
 
 
-class StateJudge:
+class RegionJudge:
     def __init__(self, config_path="region_config.yaml"):
         self.region_calculator = RegionCalculator()
         self.config_path = config_path
@@ -90,7 +91,7 @@ def test():
     
     # 创建检测器和判断器
     detector = RegionGetFromYolo()
-    judge = StateJudge()
+    judge = RegionJudge()
     
     print("=== 当前配置 ===")
     print(f"区域配置: {judge.regions}")
