@@ -1,9 +1,11 @@
 # 区域配置文件
 # 格式: class_id: [left, top, right, bottom] (标准坐标 0-1范围)
-# 这里写的区域
+
+# 这里写的区域都是这些按钮应该在的范围。
 
 regions:
-  # attack按钮 - 左下角区域
+  # Builder base里面的村庄界面区域。
+  # attack按钮应该在的左下角区域。
   0:
     left: 0
     top: 0.75
