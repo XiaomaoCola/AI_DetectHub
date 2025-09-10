@@ -35,19 +35,35 @@ from mss import mss
 from ultralytics import YOLO
 import win32gui
 import win32con
-
+import sys
+from pathlib import Path
 
 class RegionGetFromYolo:
-    def __init__(self, model_path=None, window_keyword="BlueStacks", conf_thres=0.55):
+    def __init__(self, model_name=None, model_path=None, window_keyword="BlueStacks", conf_thres=0.55):
         """
         初始化YOLO区域检测器
         
         Args:
-            model_path: YOLO模型路径
+            model_name: 模型名称 (如 "builder_base_1")，优先使用
+            model_path: YOLO模型路径 (绝对路径)，model_name为空时使用
             window_keyword: 窗口关键词
             conf_thres: 置信度阈值
         """
-        self.model_path = model_path or r"A:\Projects\AI_DetectHub\runs\detect\train\weights\best.pt"
+        # 如果提供了model_name，使用ModelAndButtonRegionManager
+        if model_name:
+            project_root = Path(__file__).parent.parent
+            sys.path.append(str(project_root))
+            from models.ModelAndButtonRegionManager import ModelAndButtonRegionManager
+            
+            manager = ModelAndButtonRegionManager()
+            model, config = manager.get_model_and_region_configs(model_name)
+            self.model_path = None  # 直接使用已加载的模型
+            self.model = model
+        else:
+            # 使用原来的路径方式
+            self.model_path = model_path or r"A:\Projects\AI_DetectHub\runs\detect\train\weights\best.pt"
+            self.model = None
+            
         self.window_keyword = window_keyword
         self.conf_thres = conf_thres
         
@@ -55,7 +71,6 @@ class RegionGetFromYolo:
         ctypes.windll.user32.SetProcessDPIAware()
         
         # 初始化
-        self.model = None
         self.sct = None
         self.class_names = {}  # 存储类别ID到名称的映射
     
@@ -92,16 +107,18 @@ class RegionGetFromYolo:
             return (left, top, right, bottom), title
         else:
             return None, None
-    
+
     def load_model(self):
         """加载YOLO模型"""
         if self.model is None:
             print(f"[INFO] 加载模型: {self.model_path}")
             self.model = YOLO(self.model_path)
-            # 获取类别名称映射
+
+        # ✅ 始终从模型里补 class_names，不依赖之前赋值
+        if not self.class_names and hasattr(self.model, 'names'):
             self.class_names = self.model.names
             print(f"[INFO] 模型类别: {self.class_names}")
-        
+
         if self.sct is None:
             self.sct = mss()
     
@@ -170,7 +187,7 @@ class RegionGetFromYolo:
 
 def main():
     """测试函数"""
-    detector = RegionGetFromYolo()
+    detector = RegionGetFromYolo(model_name="builder_base_1")
     
     print("开始检测BlueStacks窗口中的目标...")
     detections = detector.get_all_detections()

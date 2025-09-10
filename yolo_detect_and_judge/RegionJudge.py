@@ -9,19 +9,48 @@
 
 import yaml
 import os
+import sys
+from pathlib import Path
 from RegionCalculator import RegionCalculator
 
-
 class RegionJudge:
-    def __init__(self, config_path="region_config.yaml"):
+    def __init__(self, config_name=None, config_path="region_config.yaml"):
+        """
+        初始化区域判断器
+        
+        Args:
+            config_name: 配置名称 (如 "builder_base_1")，优先使用
+            config_path: 配置文件路径，config_name为空时使用
+        """
         self.region_calculator = RegionCalculator()
-        self.config_path = config_path
-        self.regions = {}
-        self.class_names = {}
-        self.load_config()
+        
+        # 如果提供了config_name，使用ModelAndButtonRegionManager获取配置
+        if config_name:
+            project_root = Path(__file__).parent.parent
+            sys.path.append(str(project_root))
+            from models.ModelAndButtonRegionManager import ModelAndButtonRegionManager
+            
+            manager = ModelAndButtonRegionManager()
+            model, config = manager.get_model_and_region_configs(config_name)
+            
+            # 直接使用配置数据，不需要文件路径
+            self.config_path = None
+            self.regions = config.get('regions', {})
+            self.class_names = config.get('class_names', {})
+            print(f"[INFO] 已加载配置 '{config_name}'，共{len(self.regions)}个区域")
+        else:
+            # 使用原来的路径方式
+            self.config_path = config_path
+            self.regions = {}
+            self.class_names = {}
+            self.load_config()
     
     def load_config(self):
         """从yaml文件加载区域配置"""
+        if not self.config_path:
+            print("[INFO] 配置已通过config_name加载，跳过文件加载")
+            return
+            
         if not os.path.exists(self.config_path):
             print(f"[ERROR] 配置文件不存在: {self.config_path}")
             return
@@ -90,8 +119,8 @@ def test():
     from RegionGetFromYolo import RegionGetFromYolo
     
     # 创建检测器和判断器
-    detector = RegionGetFromYolo()
-    judge = RegionJudge()
+    detector = RegionGetFromYolo(model_name="builder_base_1")
+    judge = RegionJudge(config_name="builder_base_1")
     
     print("=== 当前配置 ===")
     print(f"区域配置: {judge.regions}")
