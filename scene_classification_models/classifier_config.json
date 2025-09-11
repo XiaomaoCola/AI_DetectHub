@@ -1,0 +1,14 @@
+{
+  "class_names": [
+    "stage1_village",
+    "stage2_attack_menu",
+    "stage3_battle_scene",
+    "stage4_surrender_confirm",
+    "state5_return_home"
+  ],
+  "num_classes": 5,
+  "img_size": 224,
+  "model_path": "coc_scene_classifier.pt",
+  "best_val_acc": 100.0,
+  "training_epochs": 1
+}
