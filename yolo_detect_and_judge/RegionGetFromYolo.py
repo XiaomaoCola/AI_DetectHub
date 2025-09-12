@@ -53,7 +53,7 @@ class RegionGetFromYolo:
         if model_name:
             project_root = Path(__file__).parent.parent
             sys.path.append(str(project_root))
-            from models.ModelAndButtonRegionManager import ModelAndButtonRegionManager
+            from yolo_models_and_region_configs.ModelAndButtonRegionManager import ModelAndButtonRegionManager
             
             manager = ModelAndButtonRegionManager()
             model, config = manager.get_model_and_region_configs(model_name)
