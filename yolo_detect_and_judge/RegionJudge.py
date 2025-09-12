@@ -2,7 +2,8 @@
 使用这个模块的话，需要初始化RegionCalculator这个模块，因为参数里包含从这个模块得到的结果。
 
 需要的参数是：
-1. config_path: 这是设置的yaml的路径
+1. config_name: 配置的名称。
+1. config_path: 这是config_name为空时，可以设置yaml的路径。
 2. detections： 从RegionCalculator这个模块里获得的。
 3. class_id
 """
