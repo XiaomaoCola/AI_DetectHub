@@ -15,7 +15,7 @@ from pathlib import Path
 from RegionCalculator import RegionCalculator
 
 class RegionJudge:
-    def __init__(self, config_name=None, config_path="region_config.yaml"):
+    def __init__(self, config_name=None, config_path=None):
         """
         初始化区域判断器
         
@@ -116,7 +116,12 @@ class RegionJudge:
 
 
 def test():
-    """测试函数"""
+    """
+    测试函数
+
+    这个测试函数的作用是：
+    测试coc的builder base的attack按钮和find now!按钮的存在与否。
+    """
     from RegionGetFromYolo import RegionGetFromYolo
     
     # 创建检测器和判断器
