@@ -12,8 +12,8 @@ import os
 class ScenePredictor:
     """COC场景分类预测器"""
     
-    def __init__(self, model_path: str = "coc_scene_classifier.pt", 
-                 config_path: str = "classifier_config.json"):
+    def __init__(self, model_path: str = "BBAutoAttack_scene_classifier.pt",
+                 config_path: str = "BBAutoAttack_scene_classifier.json"):
         """
         初始化预测器
         
@@ -251,7 +251,7 @@ class COCSceneDetector:
 def main():
     """示例使用"""
     # 创建预测器
-    predictor = ScenePredictor("coc_scene_classifier.pt")
+    predictor = ScenePredictor("BBAutoAttack_scene_classifier.pt")
     
     if predictor.is_loaded():
         print("模型加载成功，可以开始预测")

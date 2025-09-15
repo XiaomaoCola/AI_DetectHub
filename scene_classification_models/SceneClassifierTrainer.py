@@ -13,8 +13,8 @@ class SceneClassifierTrainer:
     
     def __init__(self, 
                  data_dir: str = "../scene_classification_dataset",
-                 model_save_path: str = "coc_scene_classifier.pt",
-                 config_save_path: str = "classifier_config.json",
+                 model_save_path: str = "BBAutoAttack_scene_classifier.pt",
+                 config_save_path: str = "BBAutoAttack_scene_classifier.json",
                  batch_size: int = 16,
                  img_size: int = 224,
                  learning_rate: float = 0.001):
@@ -331,7 +331,7 @@ def main():
     # 创建训练器
     trainer = SceneClassifierTrainer(
         data_dir="../scene_classification_dataset",
-        model_save_path="coc_scene_classifier.pt",
+        model_save_path="BBAutoAttack_scene_classifier.pt",
         batch_size=16,
         learning_rate=0.001
     )
