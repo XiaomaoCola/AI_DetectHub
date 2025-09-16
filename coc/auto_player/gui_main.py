@@ -24,7 +24,6 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from core import COCGameController
-from core.mode_manager import mode_manager
 from features.base import GameMode
 
 

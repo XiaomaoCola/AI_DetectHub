@@ -1,4 +1,4 @@
-from scene_predictor import ScenePredictor
+from ScenePredictor import ScenePredictor
 
 # 创建预测器（会自动加载模型）
 predictor = ScenePredictor()

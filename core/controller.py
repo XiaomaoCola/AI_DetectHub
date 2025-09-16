@@ -12,7 +12,7 @@ from .state_machine import GameState, Detection, WindowInfo, StateHandlerRegistr
 from .states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
-from ..features.base import GameMode
+from coc.auto_player.features.base import GameMode
 
 
 class COCGameController:

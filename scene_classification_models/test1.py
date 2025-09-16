@@ -15,7 +15,7 @@ project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 # 导入场景预测器
-from scene_classification_models.scene_predictor import ScenePredictor
+from scene_classification_models.ScenePredictor import ScenePredictor
 
 
 class COCRealtimeStateDetector:

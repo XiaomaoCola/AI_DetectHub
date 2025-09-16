@@ -1,6 +1,6 @@
 # COC Auto Player 模块
 
-from .core import (
+from core import (
     COCGameController,
     GameState, 
     Detection,

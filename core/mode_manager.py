@@ -7,9 +7,9 @@
 from typing import Dict, List, Optional, Any
 from enum import Enum
 
-from ..features.base import GameMode, feature_registry
-from ..features.home_village_features import register_home_village_features
-from ..features.builder_base_features import register_builder_base_features
+from coc.auto_player.features.base import GameMode, feature_registry
+from coc.auto_player.features.home_village_features import register_home_village_features
+from coc.auto_player.features.builder_base_features import register_builder_base_features
 from .state_machine import Detection
 
 
