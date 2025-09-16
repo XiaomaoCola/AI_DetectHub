@@ -2,7 +2,7 @@ import yaml
 from typing import Dict, List, Tuple, Optional, Any
 from pathlib import Path
 
-from .state_machine import Detection, WindowInfo
+from states.state_machine import Detection, WindowInfo
 
 
 class MultiConfigManager:

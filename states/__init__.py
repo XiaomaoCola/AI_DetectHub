@@ -15,7 +15,6 @@ from .builder_base import (
     AttackMenuHandler,
     BattleSceneHandler,
     SurrenderMenuHandler,
-    ConfirmOkayHandler,
     ReturnHomeHandler
 )
 
@@ -33,6 +32,5 @@ __all__ = [
     "AttackMenuHandler",
     "BattleSceneHandler",
     "SurrenderMenuHandler",
-    "ConfirmOkayHandler",
     "ReturnHomeHandler"
 ]

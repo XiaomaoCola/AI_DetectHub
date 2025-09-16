@@ -8,12 +8,11 @@ from .finding_opponent import BuilderBaseFindingOpponentHandler
 from .versus_battle import BuilderBaseVersusBattleHandler
 
 # 自动战斗功能状态处理器
-from .auto_battle import (
+from .BBAutoAttack import (
     AutoBattleVillageHandler,
     AttackMenuHandler,
     BattleSceneHandler,
     SurrenderMenuHandler,
-    ConfirmOkayHandler,
     ReturnHomeHandler
 )
 
@@ -27,6 +26,5 @@ __all__ = [
     'AttackMenuHandler',
     'BattleSceneHandler',
     'SurrenderMenuHandler',
-    'ConfirmOkayHandler',
     'ReturnHomeHandler'
 ]

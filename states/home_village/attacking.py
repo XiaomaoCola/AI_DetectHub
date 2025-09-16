@@ -8,7 +8,7 @@ import time
 import random
 from typing import List, Optional
 
-from ...state_machine import StateHandler, GameState, Detection, WindowInfo
+from states.state_machine import StateHandler, GameState, Detection, WindowInfo
 
 
 class HomeVillageAttackingHandler(StateHandler):

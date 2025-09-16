@@ -138,7 +138,7 @@ features:
 
 ### 调整自动战斗部署策略：
 ```yaml
-# builder_base/auto_battle/state3_battle_scene.yaml
+# builder_base/BBAutoAttack/state3_battle_scene.yaml
 deployment:
   max_troops: 18
   deploy_interval: 0.4      # 更快的部署间隔
@@ -147,7 +147,7 @@ deployment:
 
 ### 修改投降条件：
 ```yaml
-# builder_base/auto_battle/state3_battle_scene.yaml
+# builder_base/BBAutoAttack/state3_battle_scene.yaml
 surrender_conditions:
   min_troops_deployed: 15   # 增加最小部署兵力
   max_battle_time: 60       # 延长战斗时间
@@ -155,7 +155,7 @@ surrender_conditions:
 
 ### 调整确认按钮搜索区域：
 ```yaml
-# builder_base/auto_battle/state5_confirm_okay.yaml
+# builder_base/BBAutoAttack/state5_confirm_okay.yaml
 okay_button_detection:
   min_confidence: 0.8       # 提高置信度要求
   search_areas:

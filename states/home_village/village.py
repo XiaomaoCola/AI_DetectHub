@@ -9,8 +9,8 @@ import pyautogui
 from typing import List, Optional, Dict, Any
 
 from coc.auto_player.features.base import GameMode
-from ...state_machine import StateHandler, GameState, Detection, WindowInfo
-from ...mode_manager import mode_manager
+from states.state_machine import StateHandler, GameState, Detection, WindowInfo
+from core.mode_manager import mode_manager
 
 
 class HomeVillageHandler(StateHandler):

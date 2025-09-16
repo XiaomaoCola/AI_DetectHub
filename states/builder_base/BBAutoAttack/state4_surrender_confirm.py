@@ -7,7 +7,7 @@ State 4: 投降菜单状态 (自动战斗功能)
 import time
 from typing import List, Optional
 
-from ....state_machine import StateHandler, GameState, Detection, WindowInfo
+from states.state_machine import StateHandler, GameState, Detection, WindowInfo
 
 
 class SurrenderMenuHandler(StateHandler):

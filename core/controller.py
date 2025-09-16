@@ -8,8 +8,8 @@ from mss import mss
 from ultralytics import YOLO
 import win32gui
 
-from .state_machine import GameState, Detection, WindowInfo, StateHandlerRegistry
-from .states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler
+from states.state_machine import GameState, Detection, WindowInfo, StateHandlerRegistry
+from states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
 from coc.auto_player.features.base import GameMode

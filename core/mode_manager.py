@@ -5,12 +5,11 @@
 """
 
 from typing import Dict, List, Optional, Any
-from enum import Enum
 
 from coc.auto_player.features.base import GameMode, feature_registry
 from coc.auto_player.features.home_village_features import register_home_village_features
 from coc.auto_player.features.builder_base_features import register_builder_base_features
-from .state_machine import Detection
+from states.state_machine import Detection
 
 
 class ModeManager:

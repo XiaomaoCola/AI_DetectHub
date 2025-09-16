@@ -1,7 +1,7 @@
 # Core模块
 
 from .controller import COCGameController
-from .state_machine import GameState, Detection, WindowInfo, StateHandler, StateHandlerRegistry
+from states.state_machine import GameState, Detection, WindowInfo, StateHandler, StateHandlerRegistry
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
 from coc.auto_player.features.base import GameMode
