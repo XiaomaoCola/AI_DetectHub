@@ -8,7 +8,8 @@ import time
 import random
 from typing import List, Optional
 
-from states.state_machine import StateHandler, GameState, Detection, WindowInfo
+from states.state_machine import StateHandler, Detection, WindowInfo
+from states.GameState import GameState
 
 
 class BuilderBaseVersusBattleHandler(StateHandler):

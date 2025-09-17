@@ -8,7 +8,8 @@ import time
 from typing import Dict, List, Optional, Any
 
 from .base import FeatureStrategy, FeatureType, GameMode, feature_registry
-from core import Detection, WindowInfo, GameState
+from core import Detection, WindowInfo
+from states.GameState import GameState
 
 
 class HVCollectResourcesStrategy(FeatureStrategy):

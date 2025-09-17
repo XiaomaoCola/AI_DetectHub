@@ -7,7 +7,8 @@ State 1: 建筑工人基地村庄界面状态 (自动战斗功能)
 import time
 from typing import List, Optional
 
-from states.state_machine import StateHandler, GameState, Detection, WindowInfo
+from states.state_machine import StateHandler, Detection, WindowInfo
+from states.GameState import GameState
 
 
 class AutoBattleVillageHandler(StateHandler):

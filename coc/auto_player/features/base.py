@@ -9,7 +9,8 @@ from typing import Dict, List, Optional, Any
 from enum import Enum
 import time
 
-from core import Detection, WindowInfo, GameState
+from core import Detection, WindowInfo
+from states.GameState import GameState
 
 
 class GameMode(Enum):
