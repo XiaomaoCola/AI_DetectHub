@@ -109,7 +109,7 @@ class SurrenderMenuHandler(StateHandler):
                          for indicator in ["builder_hut", "gold_mine"])
         if has_village:
             print("[AUTO_BATTLE_SURRENDER] 直接返回村庄")
-            return GameState.AUTO_BATTLE_VILLAGE
+            return GameState.BBAutoAttack_State_1_Village
         
         return None
     

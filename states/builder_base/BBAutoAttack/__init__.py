@@ -4,14 +4,14 @@
 包含完整的战斗循环：村庄 -> 攻击 -> 战斗 -> 投降确认 -> 返回村庄
 """
 
-from .state1_village import AutoBattleVillageHandler
+from .state1_village import BBAutoAttackState_1_VillageHandler
 from .state2_attack_menu import AttackMenuHandler  
 from .state3_battle_scene import BattleSceneHandler
 from .state4_surrender_confirm import SurrenderMenuHandler
 from .state5_return_home import ReturnHomeHandler
 
 __all__ = [
-    'AutoBattleVillageHandler',
+    'BBAutoAttackState_1_VillageHandler',
     'AttackMenuHandler',
     'BattleSceneHandler', 
     'SurrenderMenuHandler',

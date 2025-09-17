@@ -11,11 +11,11 @@ from states.state_machine import StateHandler, Detection, WindowInfo
 from states.GameState import GameState
 
 
-class AutoBattleVillageHandler(StateHandler):
+class BBAutoAttackState_1_VillageHandler(StateHandler):
     """自动战斗 - 村庄状态处理器"""
     
     def __init__(self):
-        super().__init__(GameState.AUTO_BATTLE_VILLAGE)
+        super().__init__(GameState.BBAutoAttack_State_1_Village)
         
         # 村庄状态特征标识
         self.village_indicators = [

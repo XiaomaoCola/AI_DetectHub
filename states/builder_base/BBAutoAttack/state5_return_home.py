@@ -79,7 +79,7 @@ class ReturnHomeHandler(StateHandler):
                 self._click_detection(return_home_button, window_info)
                 self.last_click_time = current_time
                 time.sleep(2)  # 等待返回村庄
-                return GameState.AUTO_BATTLE_VILLAGE  # 完成循环，回到State 1
+                return GameState.BBAutoAttack_State_1_Village  # 完成循环，回到State 1
         
         # 备用方案：点击屏幕中央区域(通常有返回按钮)
         if current_time - self.last_click_time > 5:
@@ -89,7 +89,7 @@ class ReturnHomeHandler(StateHandler):
             self._click_position(return_pos, window_info)
             self.last_click_time = current_time
             time.sleep(2)
-            return GameState.AUTO_BATTLE_VILLAGE
+            return GameState.BBAutoAttack_State_1_Village
         
         # 检查是否意外进入其他状态
         transition_state = self._check_state_transition(detections)
@@ -132,7 +132,7 @@ class ReturnHomeHandler(StateHandler):
                          for indicator in ["builder_hut", "gold_mine", "versus_battle_button"])
         if has_village:
             print("[AUTO_BATTLE_RETURN] 检测到村庄界面")
-            return GameState.AUTO_BATTLE_VILLAGE
+            return GameState.BBAutoAttack_State_1_Village
         
         # 检查是否回到攻击菜单
         has_find_now = len(self.get_detections_by_class(detections, "find_now")) > 0

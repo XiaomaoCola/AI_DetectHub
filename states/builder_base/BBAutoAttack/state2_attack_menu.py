@@ -116,7 +116,7 @@ class AttackMenuHandler(StateHandler):
         if any(self.get_detections_by_class(detections, indicator)
                for indicator in ["builder_hut", "gold_mine"]):
             print("[AUTO_BATTLE_ATTACK_MENU] 意外返回村庄")
-            return GameState.AUTO_BATTLE_VILLAGE
+            return GameState.BBAutoAttack_State_1_Village
             
         return None
     
