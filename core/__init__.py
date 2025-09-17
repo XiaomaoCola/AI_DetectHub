@@ -1,7 +1,9 @@
 # Core模块
 
 from .controller import COCGameController
-from states.state_machine import Detection, WindowInfo, StateHandler, StateHandlerRegistry
+from states.state_machine import Detection, WindowInfo
+from states.StateHandlerRegistry import StateHandlerRegistry
+from states.StateHandler import StateHandler
 from states.GameState import GameState
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
@@ -13,8 +15,6 @@ __all__ = [
     "COCGameController",
     "Detection",
     "WindowInfo",
-    "StateHandler",
-    "StateHandlerRegistry",
     "MultiConfigManager",
     "UIElementMapper",
     "StateValidator",

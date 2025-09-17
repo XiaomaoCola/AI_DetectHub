@@ -9,7 +9,8 @@ import pyautogui
 from typing import List, Optional, Dict, Any
 
 from coc.auto_player.features.base import GameMode
-from states.state_machine import StateHandler, Detection, WindowInfo
+from states.state_machine import Detection, WindowInfo
+from states.StateHandler import StateHandler
 from states.GameState import GameState
 from core.mode_manager import mode_manager
 

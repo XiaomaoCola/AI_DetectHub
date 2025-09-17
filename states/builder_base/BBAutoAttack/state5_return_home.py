@@ -7,7 +7,8 @@ State 6: 返回主页状态 (自动战斗功能)
 import time
 from typing import List, Optional
 
-from states.state_machine import StateHandler, Detection, WindowInfo
+from states.state_machine import Detection, WindowInfo
+from states.StateHandler import StateHandler
 from states.GameState import GameState
 
 
