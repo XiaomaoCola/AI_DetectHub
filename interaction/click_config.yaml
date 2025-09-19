@@ -4,8 +4,9 @@
 # 首先不是总体的yaml，因为对应的是Yolo的模型，写一个总体的yaml，引用只需要引用一个文件就可以了。
 
 rect_regions:
-  # Builder base里面的村庄界面区域。
+  # 这个是长方形区域，未来要是多出什么圆形区域，三角形区域，就在这个文件里继续加就可以了。
 
+  # Builder base里面的村庄界面区域。
   # attack按钮应该在的左下角区域。
   BB_attack:
     left: 0

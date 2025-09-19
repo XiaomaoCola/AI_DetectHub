@@ -1,6 +1,6 @@
 """
 点击器
-输入标准坐标，自动转换并点击区域中心点
+输入标准坐标，自动转换并点击区域中心点附近。
 
 
 调用的话很简单，只需要如下三行代码：
@@ -188,10 +188,11 @@ class WindowClicker:
 
     def click_button(self, button_name: str, bring_to_front: bool = True) -> bool:
         """
-        根据按钮名称点击
+        根据按钮名称点击长方形区域，
+        由于默认用的是click_config.yaml里面的rect_region。
 
         Args:
-            button_name: 按钮名称 (如 "attack", "find_now")
+            button_name: 按钮名称 (如 "BB_attack", "BB_find_now")
             bring_to_front: 是否先置顶窗口
 
         Returns:
