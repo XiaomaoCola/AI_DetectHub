@@ -13,6 +13,7 @@ import time
 import win32gui
 import pyautogui
 import yaml
+import random
 from typing import Tuple, Optional
 
 import sys
@@ -74,9 +75,9 @@ class WindowClicker:
 
     def click_region(self, norm_left: float, norm_top: float,
                     norm_right: float, norm_bottom: float,
-                    bring_to_front: bool = True) -> bool:
+                    bring_to_front: bool = True, offset_range: int = 0) -> bool:
         """
-        点击指定标准坐标区域的中心点
+        点击指定标准坐标区域的中心点，可带随机偏移
 
         Args:
             norm_left: 左上角X坐标 (0-1范围)
@@ -84,6 +85,7 @@ class WindowClicker:
             norm_right: 右下角X坐标 (0-1范围)
             norm_bottom: 右下角Y坐标 (0-1范围)
             bring_to_front: 是否先置顶窗口
+            offset_range: 随机偏移范围（像素），0表示无偏移
 
         Returns:
             bool: 是否成功点击
@@ -109,6 +111,24 @@ class WindowClicker:
             center_x = (region_left + region_right) // 2
             center_y = (region_top + region_bottom) // 2
 
+            # 应用随机偏移（如果指定）
+            final_x = center_x
+            final_y = center_y
+            offset_x = 0
+            offset_y = 0
+
+            if offset_range > 0:
+                offset_x = random.randint(-offset_range, offset_range)
+                offset_y = random.randint(-offset_range, offset_range)
+
+                # 应用偏移
+                final_x = center_x + offset_x
+                final_y = center_y + offset_y
+
+                # 确保偏移后的坐标仍在区域内
+                final_x = max(region_left + 5, min(final_x, region_right - 5))
+                final_y = max(region_top + 5, min(final_y, region_bottom - 5))
+
             # 获取窗口屏幕坐标
             found, title, window_rect = self.region_calculator.find_bluestacks_window()
             if not found:
@@ -117,12 +137,15 @@ class WindowClicker:
             window_left, window_top, _, _ = window_rect
 
             # 计算屏幕绝对坐标
-            screen_x = window_left + center_x
-            screen_y = window_top + center_y
+            screen_x = window_left + final_x
+            screen_y = window_top + final_y
 
             print(f"[INFO] 点击区域: ({norm_left:.3f}, {norm_top:.3f}) -> ({norm_right:.3f}, {norm_bottom:.3f})")
             print(f"[INFO] 相对坐标: ({region_left}, {region_top}) -> ({region_right}, {region_bottom})")
-            print(f"[INFO] 点击中心: ({center_x}, {center_y}) -> 屏幕坐标: ({screen_x}, {screen_y})")
+            if offset_range > 0:
+                print(f"[INFO] 中心坐标: ({center_x}, {center_y})")
+                print(f"[INFO] 随机偏移: ({offset_x:+d}, {offset_y:+d})")
+            print(f"[INFO] 最终点击: ({final_x}, {final_y}) -> 屏幕坐标: ({screen_x}, {screen_y})")
 
             # 移动鼠标并点击
             pyautogui.moveTo(screen_x, screen_y, duration=0.2)
@@ -186,14 +209,16 @@ class WindowClicker:
             print(f"[ERROR] 加载配置文件失败: {e}")
             return None
 
-    def click_button(self, button_name: str, bring_to_front: bool = True) -> bool:
+    def click_button(self, button_name: str, bring_to_front: bool = True,
+                    offset_range: int = 10) -> bool:
         """
-        根据按钮名称点击长方形区域，
+        根据按钮名称点击长方形区域，带随机偏移防止游戏检测
         由于默认用的是click_config.yaml里面的rect_region。
 
         Args:
             button_name: 按钮名称 (如 "BB_attack", "BB_find_now")
             bring_to_front: 是否先置顶窗口
+            offset_range: 随机偏移范围（像素），默认10像素
 
         Returns:
             bool: 是否成功点击
@@ -212,14 +237,15 @@ class WindowClicker:
             return False
 
         region = rect_regions[button_name]
-        print(f"[INFO] 点击按钮: {button_name}")
+        print(f"[INFO] 点击按钮: {button_name} (偏移范围: ±{offset_range}px)")
 
         return self.click_region(
             norm_left=region['left'],
             norm_top=region['top'],
             norm_right=region['right'],
             norm_bottom=region['bottom'],
-            bring_to_front=bring_to_front
+            bring_to_front=bring_to_front,
+            offset_range=offset_range
         )
 
 
