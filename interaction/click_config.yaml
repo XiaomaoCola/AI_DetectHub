@@ -1,0 +1,21 @@
+# 这个文件是放在interaction文件夹下让引用的。
+
+# 如果用如下路径的yaml文件的话，即yolo_models_and_region_configs/region_configs，
+# 首先不是总体的yaml，因为对应的是Yolo的模型，写一个总体的yaml，引用只需要引用一个文件就可以了。
+
+BB_regions:
+  # Builder base里面的村庄界面区域。
+
+  # attack按钮应该在的左下角区域。
+  attack:
+    left: 0
+    top: 0.75
+    right: 0.15
+    bottom: 1
+
+  # find_now按钮 - 中下区域
+  find_now:
+    left: 0.61
+    top: 0.58
+    right: 0.85
+    bottom: 0.75
