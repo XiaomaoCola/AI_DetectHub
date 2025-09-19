@@ -15,18 +15,6 @@ class StateHandler(ABC):
         self.max_retries = 3
         self.tasks: List[StateTask] = []  # 状态任务列表
 
-    @abstractmethod
-    def can_handle(self, detections: List[Detection]) -> bool:
-        """
-        判断当前检测结果是否属于这个状态
-
-        Args:
-            detections: 检测结果列表
-
-        Returns:
-            bool: 是否可以处理当前状态
-        """
-        pass
 
     def add_task(self, task: StateTask):
         """添加状态任务"""
@@ -34,6 +22,7 @@ class StateHandler(ABC):
         # 按优先级排序
         self.tasks.sort(key=lambda x: x.priority, reverse=True)
 
+    @abstractmethod
     def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """
         执行当前状态的操作 - 检查所有任务并执行第一个满足条件的

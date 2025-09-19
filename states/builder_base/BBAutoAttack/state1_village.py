@@ -32,27 +32,7 @@ class BBAutoAttackState_1_VillageHandler(StateHandler):
             "versus_battle_button"      # VS对战按钮(备用)
         ]
     
-    def can_handle(self, detections: List[Detection]) -> bool:
-        """
-        判断是否为建筑工人基地村庄状态(自动战斗)
-        特征：有builder_hut等村庄建筑，且没有其他战斗相关UI
-        """
-        # 检查村庄特征
-        has_village_elements = any(self.get_detections_by_class(detections, indicator)
-                                 for indicator in self.village_indicators)
-        
-        # 确保不在其他战斗状态
-        has_find_now = len(self.get_detections_by_class(detections, "find_now")) > 0
-        has_battle_ui = len(self.get_detections_by_class(detections, "surrender_button")) > 0
-        has_okay_button = len(self.get_detections_by_class(detections, "okay")) > 0
-        has_return_home = len(self.get_detections_by_class(detections, "return_home")) > 0
-        
-        return (has_village_elements and 
-                not has_find_now and 
-                not has_battle_ui and 
-                not has_okay_button and 
-                not has_return_home)
-    
+
     def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
         """
         执行村庄状态操作：寻找并点击Attack按钮
