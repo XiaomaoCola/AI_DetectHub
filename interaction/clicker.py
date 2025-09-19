@@ -6,7 +6,7 @@
 调用的话很简单，只需要如下三行代码：
 from clicker import WindowClicker
 clicker = WindowClicker()
-clicker.click_button("find_now")
+clicker.click_button("BB_find_now")
 """
 
 import time
@@ -203,14 +203,14 @@ class WindowClicker:
         if not config:
             return False
 
-        # 查找BB_regions中的按钮
-        bb_regions = config.get('BB_regions', {})
-        if button_name not in bb_regions:
+        # 查找rect_regions中的按钮
+        rect_regions = config.get('rect_regions', {})
+        if button_name not in rect_regions:
             print(f"[ERROR] 按钮 '{button_name}' 不存在")
-            print(f"[INFO] 可用按钮: {list(bb_regions.keys())}")
+            print(f"[INFO] 可用按钮: {list(rect_regions.keys())}")
             return False
 
-        region = bb_regions[button_name]
+        region = rect_regions[button_name]
         print(f"[INFO] 点击按钮: {button_name}")
 
         return self.click_region(
@@ -242,7 +242,7 @@ def main():
     time.sleep(3)
 
     # 简单调用：只需要按钮名称
-    success = clicker.click_button("attack")
+    success = clicker.click_button("BB_attack")
 
     if success:
         print("Attack按钮点击成功！")
