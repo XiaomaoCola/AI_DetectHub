@@ -2,11 +2,13 @@
 点击器
 输入标准坐标，自动转换并点击区域中心点附近。
 
-
 调用的话很简单，只需要如下三行代码：
 from clicker import WindowClicker
 clicker = WindowClicker()
 clicker.click_button("BB_find_now")
+
+目前用的方法是click_region和click_button，这两个方法只能用于长方形区域。
+未来如果要在其他形状的区域点击按钮的话，这个Class还得写一些比较大的方法才能实现，在现有基础上实现比较困难。
 """
 
 import time

@@ -11,6 +11,12 @@ from states.state_machine import Detection, WindowInfo
 from states.StateHandler import StateHandler
 from states.GameState import GameState
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+
+from interaction.WindowClicker import WindowClicker
+
 
 class BBAutoAttackState_1_VillageHandler(StateHandler):
     """自动战斗 - 村庄状态处理器"""
@@ -33,36 +39,24 @@ class BBAutoAttackState_1_VillageHandler(StateHandler):
         ]
     
 
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
+    def execute(self) -> Optional[GameState]:
         """
-        执行村庄状态操作：寻找并点击Attack按钮
+        执行村庄状态操作：点击Attack按钮
         """
-        print("[AUTO_BATTLE_VILLAGE] 在村庄界面，准备开始自动战斗")
-        
-        # 收集资源(可选)
-        self._collect_resources(detections, window_info)
-        
-        # 寻找Attack按钮
-        attack_detection = self._find_attack_button(detections)
-        if attack_detection:
-            print("[AUTO_BATTLE_VILLAGE] 找到Attack按钮，点击进入攻击菜单")
-            self._click_detection(attack_detection, window_info)
+        print("[AUTO_BATTLE_VILLAGE] 在村庄界面，点击Attack按钮")
+
+        # 使用WindowClicker点击attack按钮
+        clicker = WindowClicker()
+        success = clicker.click_button("BB_attack")
+
+        if success:
+            print("[AUTO_BATTLE_VILLAGE] Attack按钮点击成功，等待界面切换")
             time.sleep(1.5)  # 等待界面切换
             return GameState.AUTO_BATTLE_ATTACK_MENU
-        
-        # 如果没找到Attack按钮，尝试其他方式
-        versus_button = self.get_best_detection(detections, "versus_battle_button")
-        if versus_button:
-            print("[AUTO_BATTLE_VILLAGE] 找到VS对战按钮，点击进入")
-            self._click_detection(versus_button, window_info)
-            time.sleep(1.5)
-            return GameState.AUTO_BATTLE_ATTACK_MENU
-            
-        # 等待
-        print("[AUTO_BATTLE_VILLAGE] 未找到Attack按钮，继续等待...")
-        time.sleep(2)
-        return None
-    
+        else:
+            print("[AUTO_BATTLE_VILLAGE] Attack按钮点击失败")
+            return None
+
     def _collect_resources(self, detections: List[Detection], window_info: WindowInfo):
         """收集村庄资源(可选功能)"""
         # 简单的资源收集逻辑

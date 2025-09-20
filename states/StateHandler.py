@@ -23,30 +23,14 @@ class StateHandler(ABC):
         self.tasks.sort(key=lambda x: x.priority, reverse=True)
 
     @abstractmethod
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
+    def execute(self) -> Optional[GameState]:
         """
-        执行当前状态的操作 - 检查所有任务并执行第一个满足条件的
-
-        Args:
-            detections: 检测结果列表
-            window_info: 窗口信息
+        执行当前状态的操作
 
         Returns:
             Optional[GameState]: 下一个状态，None表示保持当前状态
         """
-        print(f"[{self.state_type.value.upper()}] 检查 {len(self.tasks)} 个可用任务...")
-
-        # 按优先级顺序检查每个任务
-        for task in self.tasks:
-            if task.condition(detections):
-                print(f"[{self.state_type.value.upper()}] 执行任务: {task.name} - {task.description}")
-                next_state = task.action(detections, window_info)
-                if next_state:
-                    print(f"[{self.state_type.value.upper()}] 任务完成，转换到状态: {next_state.value}")
-                return next_state
-
-        print(f"[{self.state_type.value.upper()}] 没有满足条件的任务，保持当前状态")
-        return None
+        pass
 
     def get_detections_by_class(self, detections: List[Detection], class_name: str) -> List[Detection]:
         """根据类别名获取检测结果"""
