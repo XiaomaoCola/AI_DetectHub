@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 from interaction.WindowClicker import WindowClicker
 
 
-class BBAutoAttackState_1_VillageHandler(StateHandler):
+class BBAutoAttackState1VillageHandler(StateHandler):
     """自动战斗 - 村庄状态处理器"""
     
     def __init__(self):
@@ -84,7 +84,7 @@ class BBAutoAttackState_1_VillageHandler(StateHandler):
             return max(versus_detections, key=lambda x: x.confidence)
             
         return None
-    
+
     def _click_detection(self, detection: Detection, window_info: WindowInfo):
         """点击检测到的目标"""
         screen_x = window_info.left + detection.center[0]

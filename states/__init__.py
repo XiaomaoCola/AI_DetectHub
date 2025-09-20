@@ -11,7 +11,7 @@ from .builder_base import (
     BuilderBaseFindingOpponentHandler,
     BuilderBaseVersusBattleHandler,
     # 自动战斗功能状态处理器
-    BBAutoAttackState_1_VillageHandler,
+    BBAutoAttackState1VillageHandler,
     AttackMenuHandler,
     BattleSceneHandler,
     SurrenderMenuHandler,
@@ -28,7 +28,7 @@ __all__ = [
     "BuilderBaseFindingOpponentHandler",
     "BuilderBaseVersusBattleHandler",
     # 建筑工人基地自动战斗功能状态处理器
-    "BBAutoAttackState_1_VillageHandler",
+    "BBAutoAttackState1VillageHandler",
     "AttackMenuHandler",
     "BattleSceneHandler",
     "SurrenderMenuHandler",

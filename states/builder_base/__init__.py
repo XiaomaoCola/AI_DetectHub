@@ -9,7 +9,7 @@ from .versus_battle import BuilderBaseVersusBattleHandler
 
 # 自动战斗功能状态处理器
 from .BBAutoAttack import (
-    BBAutoAttackState_1_VillageHandler,
+    BBAutoAttackState1VillageHandler,
     AttackMenuHandler,
     BattleSceneHandler,
     SurrenderMenuHandler,
@@ -22,7 +22,7 @@ __all__ = [
     'BuilderBaseFindingOpponentHandler', 
     'BuilderBaseVersusBattleHandler',
     # 自动战斗功能状态处理器
-    'BBAutoAttackState_1_VillageHandler',
+    'BBAutoAttackState1VillageHandler',
     'AttackMenuHandler',
     'BattleSceneHandler',
     'SurrenderMenuHandler',
