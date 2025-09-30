@@ -16,7 +16,7 @@ class AttackMenuHandler(StateHandler):
     """自动战斗 - 攻击菜单状态处理器"""
     
     def __init__(self):
-        super().__init__(GameState.AUTO_BATTLE_ATTACK_MENU)
+        super().__init__(GameState.BBAutoAttack_State_2_Attack_Menu)
         
         # 攻击菜单特征标识
         self.attack_menu_indicators = [

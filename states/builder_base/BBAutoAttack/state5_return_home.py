@@ -139,7 +139,7 @@ class ReturnHomeHandler(StateHandler):
         has_find_now = len(self.get_detections_by_class(detections, "find_now")) > 0
         if has_find_now:
             print("[AUTO_BATTLE_RETURN] 回到攻击菜单")
-            return GameState.AUTO_BATTLE_ATTACK_MENU
+            return GameState.BBAutoAttack_State_2_Attack_Menu
         
         # 检查是否还有确认界面
         has_okay = len(self.get_detections_by_class(detections, "okay")) > 0

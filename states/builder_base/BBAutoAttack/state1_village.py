@@ -52,7 +52,7 @@ class BBAutoAttackState1VillageHandler(StateHandler):
         if success:
             print("[AUTO_BATTLE_VILLAGE] Attack按钮点击成功，等待界面切换")
             time.sleep(1.5)  # 等待界面切换
-            return GameState.AUTO_BATTLE_ATTACK_MENU
+            return GameState.BBAutoAttack_State_2_Attack_Menu
         else:
             print("[AUTO_BATTLE_VILLAGE] Attack按钮点击失败")
             return None
