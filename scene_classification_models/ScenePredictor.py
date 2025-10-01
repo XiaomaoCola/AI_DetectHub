@@ -251,7 +251,7 @@ class COCSceneDetector:
 def main():
     """示例使用"""
     # 创建预测器
-    predictor = ScenePredictor("BBAutoAttack_scene_classifier.pt")
+    predictor = ScenePredictor("bb_auto_attack/BBAutoAttack_scene_classifier.pt")
     
     if predictor.is_loaded():
         print("模型加载成功，可以开始预测")

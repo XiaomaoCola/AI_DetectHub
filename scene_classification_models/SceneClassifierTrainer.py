@@ -331,7 +331,7 @@ def main():
     # 创建训练器
     trainer = SceneClassifierTrainer(
         data_dir="../scene_classification_dataset",
-        model_save_path="BBAutoAttack_scene_classifier.pt",
+        model_save_path="bb_auto_attack/BBAutoAttack_scene_classifier.pt",
         batch_size=16,
         learning_rate=0.001
     )
