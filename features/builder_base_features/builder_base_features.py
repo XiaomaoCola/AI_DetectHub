@@ -7,9 +7,9 @@
 import time
 from typing import Dict, List, Optional, Any
 
-from .base import FeatureStrategy, feature_registry
-from . import FeatureType
-from .GameMode import GameMode
+from features.base import FeatureStrategy, feature_registry
+from features import FeatureType
+from features.GameMode import GameMode
 from core import Detection, WindowInfo
 from states.GameState import GameState
 
