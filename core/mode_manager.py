@@ -6,7 +6,8 @@
 
 from typing import Dict, List, Optional, Any
 
-from coc.auto_player.features.base import GameMode, feature_registry
+from coc.auto_player.features.base import feature_registry
+from coc.auto_player.features.GameMode import GameMode
 from coc.auto_player.features.home_village_features import register_home_village_features
 from coc.auto_player.features.builder_base_features import register_builder_base_features
 from states.state_machine import Detection

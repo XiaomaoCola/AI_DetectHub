@@ -6,32 +6,12 @@
 
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Any
-from enum import Enum
 import time
 
+from coc.auto_player.features import FeatureType
+from coc.auto_player.features.GameMode import GameMode
 from core import Detection, WindowInfo
 from states.GameState import GameState
-
-
-class GameMode(Enum):
-    """游戏模式枚举"""
-    HOME_VILLAGE = "home_village"
-    BUILDER_BASE = "builder_base"
-
-
-class FeatureType(Enum):
-    """功能类型枚举"""
-    # Home Village 功能
-    HV_COLLECT_RESOURCES = "hv_collect_resources"
-    HV_ATTACK = "hv_attack" 
-    HV_CLAN_CAPITAL = "hv_clan_capital"
-    HV_TRAIN_TROOPS = "hv_train_troops"
-    HV_UPGRADE_BUILDINGS = "hv_upgrade_buildings"
-    
-    # Builder Base 功能
-    BB_COLLECT_RESOURCES = "bb_collect_resources"
-    BB_ATTACK = "bb_attack"
-    BB_UPGRADE_BUILDINGS = "bb_upgrade_buildings"
 
 
 class FeatureStrategy(ABC):
@@ -135,11 +115,11 @@ class FeatureRegistry:
         """获取指定模式的所有策略"""
         return list(self._strategies[game_mode].values())
         
-    def execute_features(self, 
-                        game_mode: GameMode,
-                        detections: List[Detection], 
-                        window_info: WindowInfo,
-                        config: Dict[str, Any]) -> Optional[GameState]:
+    def execute_features(self,
+                         game_mode: GameMode,
+                         detections: List[Detection],
+                         window_info: WindowInfo,
+                         config: Dict[str, Any]) -> Optional[GameState]:
         """
         按顺序执行指定模式下启用的功能
         

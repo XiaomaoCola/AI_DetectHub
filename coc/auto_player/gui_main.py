@@ -24,7 +24,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from core import COCGameController
-from features.base import GameMode
+from coc.auto_player.features.GameMode import GameMode
 
 
 class COCAutoGUI:

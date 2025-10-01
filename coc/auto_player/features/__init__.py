@@ -4,7 +4,8 @@
 提供可扩展的游戏功能管理系统
 """
 
-from .base import FeatureStrategy, FeatureType, FeatureRegistry
+from .base import FeatureStrategy, FeatureRegistry
+from .FeatureType import FeatureType
 from .home_village_features import register_home_village_features
 from .builder_base_features import register_builder_base_features
 
