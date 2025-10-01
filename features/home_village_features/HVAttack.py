@@ -2,6 +2,8 @@
 """
 主村庄功能策略实现
 包含收集资源、攻击、部落都城、训练部队、升级建筑等功能
+
+最下面有个使用注册器的模板。
 """
 
 from typing import Dict, List, Optional, Any
@@ -10,7 +12,9 @@ from features.FeatureHandler import FeatureHandler, feature_registry
 from features import FeatureType
 from features.GameMode import GameMode
 from core import Detection, WindowInfo
+from features.home_village_features.HVClanCapital import HVClanCapital
 from features.home_village_features.HVCollectResources import HVCollectResources
+from features.home_village_features.HVTrainTroops import HVTrainTroops
 from features.home_village_features.HVUpgradeBuildings import HVUpgradeBuildings
 from states.GameState import GameState
 
@@ -67,86 +71,6 @@ class HVAttack(FeatureHandler):
         print(f"[HV_ATTACK] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVClanCapital(FeatureHandler):
-    """主村庄 - 部落都城功能策略"""
-    
-    def __init__(self):
-        super().__init__(FeatureType.HV_CLAN_CAPITAL, GameMode.HOME_VILLAGE)
-        self.description = "自动进入部落都城进行相关操作"
-        self.cooldown_seconds = 30  # 部落都城冷却30秒
-        
-    def can_execute(self, detections: List[Detection], config: Dict[str, Any]) -> bool:
-        """检查是否可以进入部落都城"""
-        if not self.is_enabled(config):
-            return False
-            
-        if self.is_on_cooldown():
-            return False
-            
-        # 检查是否有部落都城按钮
-        clan_capital_button = self.get_best_detection(detections, 'clan_capital_button')
-        return clan_capital_button is not None
-        
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """执行部落都城操作"""
-        print("[HV_CLAN_CAPITAL] 进入部落都城...")
-        
-        clan_capital_button = self.get_best_detection(detections, 'clan_capital_button')
-        if clan_capital_button:
-            self._click_button(clan_capital_button, window_info)
-            print("[HV_CLAN_CAPITAL] 点击部落都城按钮")
-            return None
-            
-        return None
-        
-    def _click_button(self, detection: Detection, window_info: WindowInfo):
-        """点击按钮"""
-        x, y = detection.center
-        abs_x = window_info.left + x
-        abs_y = window_info.top + y
-        print(f"[HV_CLAN_CAPITAL] 点击坐标: ({abs_x}, {abs_y})")
-
-
-class HVTrainTroopsHandler(FeatureHandler):
-    """主村庄 - 训练部队功能策略"""
-    
-    def __init__(self):
-        super().__init__(FeatureType.HV_TRAIN_TROOPS, GameMode.HOME_VILLAGE)
-        self.description = "自动训练主村庄部队"
-        self.cooldown_seconds = 20  # 训练部队冷却20秒
-        
-    def can_execute(self, detections: List[Detection], config: Dict[str, Any]) -> bool:
-        """检查是否可以训练部队"""
-        if not self.is_enabled(config):
-            return False
-            
-        if self.is_on_cooldown():
-            return False
-            
-        # 检查是否有兵营按钮
-        barracks_button = self.get_best_detection(detections, 'barracks_button')
-        return barracks_button is not None
-        
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """执行训练部队"""
-        print("[HV_TRAIN] 开始训练主村庄部队...")
-        
-        barracks_button = self.get_best_detection(detections, 'barracks_button')
-        if barracks_button:
-            self._click_button(barracks_button, window_info)
-            print("[HV_TRAIN] 点击兵营按钮")
-            return None
-            
-        return None
-        
-    def _click_button(self, detection: Detection, window_info: WindowInfo):
-        """点击按钮"""
-        x, y = detection.center
-        abs_x = window_info.left + x
-        abs_y = window_info.top + y
-        print(f"[HV_TRAIN] 点击坐标: ({abs_x}, {abs_y})")
-
-
 def register_home_village_features():
     """注册所有主村庄功能"""
     print("[FEATURES] 注册主村庄功能策略...")
@@ -155,7 +79,7 @@ def register_home_village_features():
     feature_registry.register(HVCollectResources())
     feature_registry.register(HVAttack())
     feature_registry.register(HVClanCapital())
-    feature_registry.register(HVTrainTroopsHandler())
+    feature_registry.register(HVTrainTroops())
     feature_registry.register(HVUpgradeBuildings())
     
     # 设置默认执行顺序（收集资源优先，攻击其次）
