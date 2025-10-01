@@ -8,7 +8,7 @@ import time
 import random
 from typing import List, Optional
 
-from states.state_machine import Detection, WindowInfo
+from states.DataClasses import Detection, WindowInfo
 from states.StateHandler import StateHandler
 from states.GameState import GameState
 

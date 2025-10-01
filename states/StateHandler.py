@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 
 from states.GameState import GameState
-from states.state_machine import StateTask, Detection, WindowInfo
+from states.DataClasses import StateTask, Detection, WindowInfo
 
 
 class StateHandler(ABC):

@@ -10,7 +10,7 @@ from features.FeatureHandler import feature_registry
 from features.GameMode import GameMode
 from features.home_village_features.HVAutoAttack import register_home_village_features
 from features.builder_base_features.BBAutoAttack import register_builder_base_features
-from states.state_machine import Detection
+from states.DataClasses import Detection
 
 
 class ModeManager:

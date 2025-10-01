@@ -8,7 +8,7 @@ from mss import mss
 from ultralytics import YOLO
 import win32gui
 
-from states.state_machine import Detection, WindowInfo
+from states.DataClasses import Detection, WindowInfo
 from states.StateHandlerRegistry import StateHandlerRegistry
 from states.GameState import GameState
 from states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler

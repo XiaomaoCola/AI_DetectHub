@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Any
 from features import FeatureType, FeatureHandler
 from features.GameMode import GameMode
 from states.GameState import GameState
-from states.state_machine import Detection, WindowInfo
+from states.DataClasses import Detection, WindowInfo
 
 
 class FeatureRegistry:

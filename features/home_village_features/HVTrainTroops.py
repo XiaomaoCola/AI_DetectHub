@@ -3,7 +3,7 @@ from typing import List, Dict, Any, Optional
 from features import FeatureHandler, FeatureType
 from features.GameMode import GameMode
 from states.GameState import GameState
-from states.state_machine import Detection, WindowInfo
+from states.DataClasses import Detection, WindowInfo
 
 
 class HVTrainTroops(FeatureHandler):

@@ -9,7 +9,7 @@ import pyautogui
 from typing import List, Optional, Dict, Any
 
 from features.GameMode import GameMode
-from states.state_machine import Detection, WindowInfo
+from states.DataClasses import Detection, WindowInfo
 from states.StateHandler import StateHandler
 from states.GameState import GameState
 from core.mode_manager import mode_manager
