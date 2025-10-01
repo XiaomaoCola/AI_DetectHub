@@ -7,14 +7,14 @@
 import time
 from typing import Dict, List, Optional, Any
 
-from features.base import FeatureStrategy, feature_registry
+from features.base import FeatureHandler, feature_registry
 from features import FeatureType
 from features.GameMode import GameMode
 from core import Detection, WindowInfo
 from states.GameState import GameState
 
 
-class HVCollectResourcesStrategy(FeatureStrategy):
+class HVCollectResourcesHandler(FeatureHandler):
     """主村庄 - 收集资源功能策略"""
     
     def __init__(self):
@@ -73,7 +73,7 @@ class HVCollectResourcesStrategy(FeatureStrategy):
         print(f"[HV_COLLECT] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVAttackStrategy(FeatureStrategy):
+class HVAttackHandler(FeatureHandler):
     """主村庄 - 攻击功能策略"""
     
     def __init__(self):
@@ -125,7 +125,7 @@ class HVAttackStrategy(FeatureStrategy):
         print(f"[HV_ATTACK] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVClanCapitalStrategy(FeatureStrategy):
+class HVClanCapitalHandler(FeatureHandler):
     """主村庄 - 部落都城功能策略"""
     
     def __init__(self):
@@ -165,7 +165,7 @@ class HVClanCapitalStrategy(FeatureStrategy):
         print(f"[HV_CLAN_CAPITAL] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVTrainTroopsStrategy(FeatureStrategy):
+class HVTrainTroopsHandler(FeatureHandler):
     """主村庄 - 训练部队功能策略"""
     
     def __init__(self):
@@ -205,7 +205,7 @@ class HVTrainTroopsStrategy(FeatureStrategy):
         print(f"[HV_TRAIN] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVUpgradeBuildingsStrategy(FeatureStrategy):
+class HVUpgradeBuildingsHandler(FeatureHandler):
     """主村庄 - 升级建筑功能策略"""
     
     def __init__(self):
@@ -252,11 +252,11 @@ def register_home_village_features():
     print("[FEATURES] 注册主村庄功能策略...")
     
     # 注册各种功能策略
-    feature_registry.register(HVCollectResourcesStrategy())
-    feature_registry.register(HVAttackStrategy())
-    feature_registry.register(HVClanCapitalStrategy())
-    feature_registry.register(HVTrainTroopsStrategy())
-    feature_registry.register(HVUpgradeBuildingsStrategy())
+    feature_registry.register(HVCollectResourcesHandler())
+    feature_registry.register(HVAttackHandler())
+    feature_registry.register(HVClanCapitalHandler())
+    feature_registry.register(HVTrainTroopsHandler())
+    feature_registry.register(HVUpgradeBuildingsHandler())
     
     # 设置默认执行顺序（收集资源优先，攻击其次）
     default_order = [

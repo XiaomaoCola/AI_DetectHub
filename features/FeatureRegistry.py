@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Any
 
-from features import FeatureType, FeatureStrategy
+from features import FeatureType, FeatureHandler
 from features.GameMode import GameMode
 from states.GameState import GameState
 from states.state_machine import Detection, WindowInfo
@@ -10,7 +10,7 @@ class FeatureRegistry:
     """功能策略注册表"""
 
     def __init__(self):
-        self._strategies: Dict[GameMode, Dict[FeatureType, FeatureStrategy]] = {
+        self._strategies: Dict[GameMode, Dict[FeatureType, FeatureHandler]] = {
             GameMode.HOME_VILLAGE: {},
             GameMode.BUILDER_BASE: {}
         }
@@ -19,7 +19,7 @@ class FeatureRegistry:
             GameMode.BUILDER_BASE: []
         }
 
-    def register(self, strategy: FeatureStrategy):
+    def register(self, strategy: FeatureHandler):
         """注册功能策略"""
         game_mode = strategy.game_mode
         feature_type = strategy.feature_type
@@ -38,11 +38,11 @@ class FeatureRegistry:
             self._execution_order[game_mode].remove(feature_type)
             print(f"[FEATURES] 注销功能策略: {game_mode.value} - {feature_type.value}")
 
-    def get_strategy(self, game_mode: GameMode, feature_type: FeatureType) -> Optional[FeatureStrategy]:
+    def get_strategy(self, game_mode: GameMode, feature_type: FeatureType) -> Optional[FeatureHandler]:
         """获取功能策略"""
         return self._strategies[game_mode].get(feature_type)
 
-    def get_all_strategies(self, game_mode: GameMode) -> List[FeatureStrategy]:
+    def get_all_strategies(self, game_mode: GameMode) -> List[FeatureHandler]:
         """获取指定模式的所有策略"""
         return list(self._strategies[game_mode].values())
 

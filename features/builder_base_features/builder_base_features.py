@@ -7,14 +7,14 @@
 import time
 from typing import Dict, List, Optional, Any
 
-from features.base import FeatureStrategy, feature_registry
+from features.base import FeatureHandler, feature_registry
 from features import FeatureType
 from features.GameMode import GameMode
 from core import Detection, WindowInfo
 from states.GameState import GameState
 
 
-class BBCollectResourcesStrategy(FeatureStrategy):
+class BBCollectResourcesHandler(FeatureHandler):
     """建筑工人基地 - 收集资源功能策略"""
     
     def __init__(self):
@@ -80,7 +80,7 @@ class BBCollectResourcesStrategy(FeatureStrategy):
         print(f"[BB_COLLECT] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class BBAttackStrategy(FeatureStrategy):
+class BBAttackHandler(FeatureHandler):
     """建筑工人基地 - 攻击功能策略"""
     
     def __init__(self):
@@ -163,7 +163,7 @@ class BBAttackStrategy(FeatureStrategy):
         print(f"[BB_ATTACK] 点击计算位置: ({abs_x}, {abs_y})")
 
 
-class BBUpgradeBuildingsStrategy(FeatureStrategy):
+class BBUpgradeBuildingsHandler(FeatureHandler):
     """建筑工人基地 - 升级建筑功能策略"""
     
     def __init__(self):
@@ -223,9 +223,9 @@ def register_builder_base_features():
     print("[FEATURES] 注册建筑工人基地功能策略...")
     
     # 注册各种功能策略
-    feature_registry.register(BBCollectResourcesStrategy())
-    feature_registry.register(BBAttackStrategy())
-    feature_registry.register(BBUpgradeBuildingsStrategy())
+    feature_registry.register(BBCollectResourcesHandler())
+    feature_registry.register(BBAttackHandler())
+    feature_registry.register(BBUpgradeBuildingsHandler())
     
     # 设置默认执行顺序（收集资源优先，升级建筑其次，攻击最后）
     default_order = [

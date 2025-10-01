@@ -14,7 +14,7 @@ from core import Detection, WindowInfo
 from states.GameState import GameState
 
 
-class FeatureStrategy(ABC):
+class FeatureHandler(ABC):
     """功能策略抽象基类"""
     
     def __init__(self, feature_type: FeatureType, game_mode: GameMode):
