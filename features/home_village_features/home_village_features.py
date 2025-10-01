@@ -4,76 +4,18 @@
 包含收集资源、攻击、部落都城、训练部队、升级建筑等功能
 """
 
-import time
 from typing import Dict, List, Optional, Any
 
 from features.FeatureHandler import FeatureHandler, feature_registry
 from features import FeatureType
 from features.GameMode import GameMode
 from core import Detection, WindowInfo
+from features.home_village_features.HVCollectResources import HVCollectResources
+from features.home_village_features.HVUpgradeBuildings import HVUpgradeBuildings
 from states.GameState import GameState
 
 
-class HVCollectResourcesHandler(FeatureHandler):
-    """主村庄 - 收集资源功能策略"""
-    
-    def __init__(self):
-        super().__init__(FeatureType.HV_COLLECT_RESOURCES, GameMode.HOME_VILLAGE)
-        self.description = "自动收集主村庄中的资源（金币、圣水、暗黑重油）"
-        self.cooldown_seconds = 10  # 收集资源冷却10秒
-        
-    def can_execute(self, detections: List[Detection], config: Dict[str, Any]) -> bool:
-        """检查是否可以收集资源"""
-        if not self.is_enabled(config):
-            return False
-            
-        if self.is_on_cooldown():
-            return False
-            
-        # 检查是否有可收集的资源
-        collectible_resources = ['gold_collector', 'elixir_collector', 'dark_elixir_collector']
-        for resource_type in collectible_resources:
-            if self.get_detections_by_class(detections, resource_type):
-                return True
-                
-        return False
-        
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """执行收集资源"""
-        print("[HV_COLLECT] 开始收集主村庄资源...")
-        
-        # 收集各种资源
-        resources_collected = 0
-        collectible_resources = [
-            ('gold_collector', '金币收集器'),
-            ('elixir_collector', '圣水收集器'), 
-            ('dark_elixir_collector', '暗黑重油收集器')
-        ]
-        
-        for resource_class, resource_name in collectible_resources:
-            resource_detections = self.get_detections_by_class(detections, resource_class)
-            for detection in resource_detections:
-                self._click_resource(detection, window_info)
-                resources_collected += 1
-                print(f"[HV_COLLECT] 收集 {resource_name}")
-                time.sleep(0.5)  # 短暂等待避免点击过快
-                
-        if resources_collected > 0:
-            print(f"[HV_COLLECT] 完成，共收集 {resources_collected} 个资源")
-        else:
-            print("[HV_COLLECT] 没有找到可收集的资源")
-            
-        return None  # 保持当前状态
-        
-    def _click_resource(self, detection: Detection, window_info: WindowInfo):
-        """点击资源收集器"""
-        x, y = detection.center
-        abs_x = window_info.left + x
-        abs_y = window_info.top + y
-        print(f"[HV_COLLECT] 点击坐标: ({abs_x}, {abs_y})")
-
-
-class HVAttackHandler(FeatureHandler):
+class HVAttack(FeatureHandler):
     """主村庄 - 攻击功能策略"""
     
     def __init__(self):
@@ -125,7 +67,7 @@ class HVAttackHandler(FeatureHandler):
         print(f"[HV_ATTACK] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVClanCapitalHandler(FeatureHandler):
+class HVClanCapital(FeatureHandler):
     """主村庄 - 部落都城功能策略"""
     
     def __init__(self):
@@ -205,58 +147,16 @@ class HVTrainTroopsHandler(FeatureHandler):
         print(f"[HV_TRAIN] 点击坐标: ({abs_x}, {abs_y})")
 
 
-class HVUpgradeBuildingsHandler(FeatureHandler):
-    """主村庄 - 升级建筑功能策略"""
-    
-    def __init__(self):
-        super().__init__(FeatureType.HV_UPGRADE_BUILDINGS, GameMode.HOME_VILLAGE)
-        self.description = "自动升级主村庄建筑"
-        self.cooldown_seconds = 30  # 升级建筑冷却30秒
-        
-    def can_execute(self, detections: List[Detection], config: Dict[str, Any]) -> bool:
-        """检查是否可以升级建筑"""
-        if not self.is_enabled(config):
-            return False
-            
-        if self.is_on_cooldown():
-            return False
-            
-        # 检查是否有可升级的建筑
-        upgrade_indicators = self.get_detections_by_class(detections, 'upgrade_available')
-        return len(upgrade_indicators) > 0
-        
-    def execute(self, detections: List[Detection], window_info: WindowInfo) -> Optional[GameState]:
-        """执行升级建筑"""
-        print("[HV_UPGRADE] 开始升级主村庄建筑...")
-        
-        upgrade_indicators = self.get_detections_by_class(detections, 'upgrade_available')
-        if upgrade_indicators:
-            # 选择第一个可升级的建筑
-            first_upgrade = upgrade_indicators[0]
-            self._click_button(first_upgrade, window_info)
-            print("[HV_UPGRADE] 点击升级按钮")
-            return None
-            
-        return None
-        
-    def _click_button(self, detection: Detection, window_info: WindowInfo):
-        """点击按钮"""
-        x, y = detection.center
-        abs_x = window_info.left + x
-        abs_y = window_info.top + y
-        print(f"[HV_UPGRADE] 点击坐标: ({abs_x}, {abs_y})")
-
-
 def register_home_village_features():
     """注册所有主村庄功能"""
     print("[FEATURES] 注册主村庄功能策略...")
     
     # 注册各种功能策略
-    feature_registry.register(HVCollectResourcesHandler())
-    feature_registry.register(HVAttackHandler())
-    feature_registry.register(HVClanCapitalHandler())
+    feature_registry.register(HVCollectResources())
+    feature_registry.register(HVAttack())
+    feature_registry.register(HVClanCapital())
     feature_registry.register(HVTrainTroopsHandler())
-    feature_registry.register(HVUpgradeBuildingsHandler())
+    feature_registry.register(HVUpgradeBuildings())
     
     # 设置默认执行顺序（收集资源优先，攻击其次）
     default_order = [
