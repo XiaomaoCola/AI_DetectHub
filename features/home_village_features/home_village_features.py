@@ -7,7 +7,7 @@
 import time
 from typing import Dict, List, Optional, Any
 
-from features.base import FeatureHandler, feature_registry
+from features.FeatureHandler import FeatureHandler, feature_registry
 from features import FeatureType
 from features.GameMode import GameMode
 from core import Detection, WindowInfo

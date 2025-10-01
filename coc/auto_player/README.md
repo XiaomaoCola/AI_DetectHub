@@ -270,7 +270,7 @@ feature_registry.register(NewFeatureStrategy())
 
 **步骤3：添加功能类型**
 ```python
-# features/base.py 中的FeatureType枚举
+# features/FeatureHandler.py 中的FeatureType枚举
 class FeatureType(Enum):
     # 现有功能...
     NEW_FEATURE = "new_feature"  # 添加新类型
