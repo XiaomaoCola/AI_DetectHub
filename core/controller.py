@@ -14,7 +14,7 @@ from states.GameState import GameState
 from states import HomeVillageHandler, BuilderBaseVillageHandler, FindingOpponentHandler, AttackingHandler
 from .ui_manager import MultiConfigManager, UIElementMapper, StateValidator
 from .mode_manager import mode_manager
-from coc.auto_player.features.GameMode import GameMode
+from features.GameMode import GameMode
 
 
 class COCGameController:

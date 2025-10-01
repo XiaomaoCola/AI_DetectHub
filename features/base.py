@@ -8,8 +8,8 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Any
 import time
 
-from coc.auto_player.features import FeatureType
-from coc.auto_player.features.GameMode import GameMode
+from features import FeatureType
+from features.GameMode import GameMode
 from core import Detection, WindowInfo
 from states.GameState import GameState
 
