@@ -19,7 +19,7 @@ from features.home_village_features.HVUpgradeBuildings import HVUpgradeBuildings
 from states.GameState import GameState
 
 
-class HVAttack(FeatureHandler):
+class HVAutoAttack(FeatureHandler):
     """主村庄 - 攻击功能策略"""
     
     def __init__(self):
@@ -77,7 +77,7 @@ def register_home_village_features():
     
     # 注册各种功能策略
     feature_registry.register(HVCollectResources())
-    feature_registry.register(HVAttack())
+    feature_registry.register(HVAutoAttack())
     feature_registry.register(HVClanCapital())
     feature_registry.register(HVTrainTroops())
     feature_registry.register(HVUpgradeBuildings())
