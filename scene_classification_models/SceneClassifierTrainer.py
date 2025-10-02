@@ -55,7 +55,16 @@ class SceneClassifierTrainer:
         }
     
     def _get_transforms(self) -> Tuple[transforms.Compose, transforms.Compose]:
-        """获取数据预处理变换"""
+        """
+        构建两个图像处理的“流水线”：
+        - 训练集会做翻转、旋转、变亮等增强操作
+        - 验证集只做基础的缩放和归一化
+
+        这些操作会在图片喂给模型之前自动执行（GPT写的，不知道这句话啥意思）
+        """
+        # transforms.Compose(...) 这个写法是 PyTorch 的图像预处理pipeline的工具。
+        # 传进去一个变换列表 [...]，会自动按顺序执行每个变换，
+        # 调用 Compose 对象就等于依次执行全部步骤。
         train_transform = transforms.Compose([
             transforms.Resize((self.img_size, self.img_size)),
             transforms.RandomHorizontalFlip(p=0.3),
@@ -72,13 +81,16 @@ class SceneClassifierTrainer:
         ])
         
         return train_transform, val_transform
-    
+
     def load_data(self, train_split: float = 0.8) -> bool:
         """
-        加载和准备数据
+        读取图片数据集，并把它切分为训练集和验证集
+        同时设置图像预处理操作（比如缩放、翻转等）
+        最后返回两个 DataLoader，供模型训练和评估使用
         
         Args:
             train_split: 训练集比例
+            train_split=0.8 表示 80% 的图片用来训练，20% 验证（默认设置）。
             
         Returns:
             bool: 是否成功加载数据
@@ -86,8 +98,13 @@ class SceneClassifierTrainer:
         try:
             train_transform, val_transform = self._get_transforms()
             
-            # 加载数据集
+            # 加载数据集，这行非常关键：使用 PyTorch 自带的 ImageFolder 类从文件夹读取图片，所以目录结构固定。
+            # datasets.ImageFolder(...)，是 PyTorch torchvision 自带的一个工具类，用来从文件夹里加载数据集。
+            # transform=train_transform表示：每次从这个数据集中取图片的时候，
+            # 都会先执行 train_transform（也就是缩放、翻转、旋转、亮度扰动、归一化等处理），再把处理后的结果交给模型。
             dataset = datasets.ImageFolder(str(self.data_dir), transform=train_transform)
+            # 关于dataset.classes：ImageFolder 会自动记录下有哪些类别，并保存在 .classes 属性里。
+            # 比如['stage1_village', 'stage2_attack_menu', 'stage3_battle_scene']。
             self.class_names = dataset.classes
             self.num_classes = len(self.class_names)
             
@@ -97,9 +114,11 @@ class SceneClassifierTrainer:
             # 数据分割
             train_size = int(train_split * len(dataset))
             val_size = len(dataset) - train_size
+            # random_split 进行随机划分。
             train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
             
-            # 为验证集设置不同的transform
+            # 为验证集设置不同的transform。
+            # val_dataset 是 Subset，它有个 .dataset 属性，指向原始 ImageFolder 对象。
             val_dataset.dataset.transform = val_transform
             
             # 创建数据加载器
