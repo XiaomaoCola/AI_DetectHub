@@ -111,15 +111,18 @@ class SceneClassifierTrainer:
             print(f"[INFO] 找到 {self.num_classes} 个类别: {self.class_names}")
             print(f"[INFO] 总共 {len(dataset)} 张图片")
             
+            # 创建验证集的独立dataset，避免影响训练集的transform
+            val_dataset_base = datasets.ImageFolder(str(self.data_dir), transform=val_transform)
+
             # 数据分割
             train_size = int(train_split * len(dataset))
             val_size = len(dataset) - train_size
             # random_split 进行随机划分。
-            train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
-            
-            # 为验证集设置不同的transform。
-            # val_dataset 是 Subset，它有个 .dataset 属性，指向原始 ImageFolder 对象。
-            val_dataset.dataset.transform = val_transform
+            train_dataset, temp_val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
+
+            # 为验证集创建独立的Subset，使用不同的base dataset
+            val_indices = temp_val_dataset.indices
+            val_dataset = torch.utils.data.Subset(val_dataset_base, val_indices)
             
             # 创建数据加载器
             self.train_loader = DataLoader(
