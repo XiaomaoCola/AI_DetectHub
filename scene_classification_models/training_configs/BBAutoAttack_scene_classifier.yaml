@@ -1,8 +1,8 @@
 model_name: "BBAutoAttack_scene_classifier"
 
 data_dir: "bb_auto_attack/dataset"
-model_save_path: "bb_auto_attack/(test)BBAutoAttack_scene_classifier.pt"
-config_save_path: "bb_auto_attack/(test)BBAutoAttack_scene_classifier.json"
+model_save_path: "bb_collect_resources/BBCollectResources_scene_classifier.pt"
+config_save_path: "bb_collect_resources/BBCollectResources_classifier.json"
 
 batch_size: 16
 img_size: 224
