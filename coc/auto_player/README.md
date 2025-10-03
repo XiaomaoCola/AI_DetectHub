@@ -243,7 +243,7 @@ builder_base/
 
 **步骤1：创建功能策略类**
 ```python
-# features/HVAttack.py 或 BBAutoAttack.py
+# features/HVAttack.py 或 dataset.py
 from .base import FeatureStrategy, FeatureType, GameMode
 
 class NewFeatureStrategy(FeatureStrategy):
